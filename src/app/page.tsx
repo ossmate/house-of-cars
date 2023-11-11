@@ -1,3 +1,6 @@
+"use client";
+
+import { Button } from "@/components/Button/Button";
 import { css } from "../../styled-system/css";
 
 export default function Home() {
@@ -13,6 +16,7 @@ export default function Home() {
       })}
     >
       Hello 🐼!
+      <Button onClick={() => console.log("clicked")}>Click me</Button>
     </div>
   );
 }

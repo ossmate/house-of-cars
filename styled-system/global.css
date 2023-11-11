@@ -33,4 +33,9 @@
     --scale-x: 1;
     --scale-y: 1
     }
+
+  html, body {
+    background-color: var(--colors-quaternary);
+    line-height: 1.5
+    }
 }
