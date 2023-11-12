@@ -1,7 +1,8 @@
 "use client";
 
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/ui/Button";
 import { css } from "../../styled-system/css";
+import { Navigation } from "@/components/Navigation";
 
 export default function Home() {
   return (
@@ -9,14 +10,12 @@ export default function Home() {
       className={css({
         fontSize: "2xl",
         fontWeight: "bold",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        h: "dvh",
       })}
     >
       Hello 🐼!
-      <Button onClick={() => console.log("clicked")}>Click me</Button>
+      <Button variant="destructive" onClick={() => console.log("clicked")}>
+        Click me
+      </Button>
     </div>
   );
 }

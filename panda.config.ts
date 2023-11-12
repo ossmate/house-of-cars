@@ -2,13 +2,14 @@ import { defineConfig, defineGlobalStyles } from "@pandacss/dev";
 
 const globalCss = defineGlobalStyles({
   "html, body": {
-    backgroundColor: "quaternary",
+    backgroundColor: "emerald.400!",
     lineHeight: "1.5",
   },
 });
 
 export default defineConfig({
   // Whether to use css reset
+  presets: ["@shadow-panda/preset"],
   globalCss,
   preflight: true,
   jsxFramework: "react",
@@ -21,17 +22,27 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    tokens: {
-      colors: {
-        primary: { value: "#9a8c98" },
-        secondary: { value: "#4A4E69" },
-        tertiary: { value: "#C9ADA7" },
-        quaternary: { value: "#f2e9e4" },
+    extend: {
+      // Override `semanticTokens`
+      semanticTokens: {
+        // Example: Set primary color to another value
+        colors: {
+          primary: {
+            DEFAULT: {
+              value: {
+                // Light mode
+                base: "{colors.grayscale.900}",
+                // Dark mode
+                _dark: "{colors.grayscale.50}",
+              },
+            },
+          },
+        },
       },
     },
-    extend: {},
   },
 
   // The output directory for your css system
-  outdir: "styled-system",
+  emitPackage: true,
+  outdir: "@shadow-panda/styled-system",
 });
