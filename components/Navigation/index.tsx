@@ -10,7 +10,6 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const menuItems = [
   { id: 1, label: "Home", href: "/" },
@@ -21,8 +20,6 @@ const menuItems = [
 export const Navigation = () => {
   const pathname = usePathname();
 
-  const navigationTriggerStyles = navigationMenuTriggerStyle();
-
   return (
     <NavigationMenu className="bg-green-400 p-10 min-w-full d-flex justify-end">
       <NavigationMenuList>
@@ -30,10 +27,8 @@ export const Navigation = () => {
           <NavigationMenuItem key={id}>
             <Link href={href} legacyBehavior passHref>
               <NavigationMenuLink
-                className={cn(
-                  navigationTriggerStyles,
-                  pathname === href ? "bg-red-400" : null,
-                )}
+                active={pathname === href}
+                className={cn(navigationMenuTriggerStyle())}
               >
                 {label}
               </NavigationMenuLink>
