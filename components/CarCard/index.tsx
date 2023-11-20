@@ -2,47 +2,28 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-const cars = [
-  {
-    id: 1,
-    brand: "BMW",
-    model: "Series 3",
-    generation: "G20",
-    engine: "3.0i",
-    price: "10000",
-    isHighlighted: true,
-  },
-  {
-    id: 2,
-    brand: "BMW",
-    model: "Series 5",
-    generation: "G30",
-    engine: "3.0d",
-    price: "15000",
-    isHighlighted: true,
-  },
-  {
-    id: 3,
-    brand: "BMW",
-    model: "Series 7",
-    generation: "G70",
-    engine: "3.0ie",
-    price: "25000",
-  },
-  {
-    id: 4,
-    brand: "Mercedes",
-    model: "Series G",
-    generation: "W464",
-    engine: "4.0",
-    price: "55000",
-  },
-];
+type Car = {
+  id: string;
+  brand: string;
+  model: string;
+  generation: string;
+  engine: string;
+  isHighlighted: boolean;
+  price: number;
+};
 
-export const CarCard = () => {
+async function getCars(): Promise<{ data: Car[] }> {
+  const res = await fetch("http://localhost:5000/api/cars");
+
+  return res.json();
+}
+
+export const CarCard = async () => {
+  const { data } = await getCars();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
-      {cars.map(
+      {data.map(
         ({ id, brand, model, generation, engine, isHighlighted, price }) => (
           <div key={id} className="md:min-w-full min-w-[350px]">
             <div
