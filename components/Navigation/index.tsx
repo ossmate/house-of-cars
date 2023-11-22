@@ -15,6 +15,7 @@ const menuItems = [
   { id: 1, label: "Home", href: "/" },
   { id: 2, label: "Cars", href: "/cars" },
   { id: 3, label: "Favorite", href: "/favorite" },
+  { id: 4, label: "Settings", href: "/settings" },
 ];
 
 export const Navigation = () => {
