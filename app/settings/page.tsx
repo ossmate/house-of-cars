@@ -1,6 +1,6 @@
 import { AddNewCar } from "@/components/forms/AddNewCar";
 
-type Brand = {
+export type Brand = {
   id: string;
   name: string;
   imageUrl: string;
@@ -15,11 +15,9 @@ const getBrands = async (): Promise<{ data: Brand[] }> => {
 export default async function Settings() {
   const { data } = await getBrands();
 
-  console.log(data, "data");
-
   return (
     <main className="flex justify-start min-h-screen flex-col items-center  p-24">
-      <AddNewCar />
+      <AddNewCar brands={data} />
     </main>
   );
 }

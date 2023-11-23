@@ -1,14 +1,10 @@
 "use client";
 
 import { createCar } from "@/app/api/car/route";
+import { Brand } from "@/app/settings/page";
 import { useFormStatus, useFormState } from "react-dom";
 
 const formConfig = [
-  {
-    id: "brand",
-    label: "Brand",
-    type: "text",
-  },
   {
     id: "model",
     label: "Model",
@@ -31,22 +27,30 @@ const formConfig = [
   },
 ];
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button type="submit" aria-disabled={pending}>
-      Add
-    </button>
-  );
-}
-
-export const AddNewCar = async () => {
+export const AddNewCar = async ({ brands }: { brands: Brand[] }) => {
   const [state2, formAction2] = useFormState(createCar, null);
+
+  /** TODO:
+   * create ui component for select
+   * add labels for select
+   * pass id as value and then find this id in db in brands table
+   * validate form before it's sent
+   */
 
   return (
     <div>
       <form action={formAction2} className="flex flex-col">
+        <select
+          id="brand"
+          name="brand"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          {brands.map(({ id, name }) => (
+            <option key={id} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
         {formConfig.map(({ id, label, type }) => (
           <span key={id}>
             <label htmlFor={id} key={id}>
@@ -60,7 +64,11 @@ export const AddNewCar = async () => {
             />
           </span>
         ))}
-        <select id="isHighlighted" name="isHighlighted">
+        <select
+          id="isHighlighted"
+          name="isHighlighted"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
           <option value="true">True</option>
           <option value="false">False</option>
         </select>
