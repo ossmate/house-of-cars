@@ -1,6 +1,5 @@
 "use client";
 
-import { createTodo, createTodo2 } from "@/app/actions/actions";
 import { createCar } from "@/app/api/car/route";
 import { useFormStatus, useFormState } from "react-dom";
 
@@ -42,7 +41,7 @@ function SubmitButton() {
   );
 }
 
-export const AddNewCar = () => {
+export const AddNewCar = async () => {
   const [state2, formAction2] = useFormState(createCar, null);
 
   return (
