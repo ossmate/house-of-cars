@@ -39,7 +39,7 @@ export const CarCard = async ({
             width="35"
             height="35"
             alt="brand"
-            src={`/cars/logos/${brand}.png`}
+            src={`/cars/logos/${brand.split(" ")[0]}.png`}
             className="mr-2"
           />
           <span>
