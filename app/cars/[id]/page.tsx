@@ -13,7 +13,7 @@ export const getCar = async (id: string): Promise<{ data: Car }> => {
   return res.json();
 };
 
-async function Car({ params }: Props) {
+const Car = async ({ params }: Props) => {
   const { data } = await getCar(params.id);
 
   return (
@@ -21,6 +21,6 @@ async function Car({ params }: Props) {
       <CarCard {...data} />
     </main>
   );
-}
+};
 
 export default Car;
