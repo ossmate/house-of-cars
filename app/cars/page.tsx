@@ -1,6 +1,6 @@
 import { CarCard } from "@/components/CarCard";
 
-type Car = {
+export type Car = {
   id: string;
   brand: string;
   model: string;
@@ -32,6 +32,7 @@ export const Cars = async () => {
           ({ id, brand, model, generation, engine, isHighlighted, price }) => (
             <CarCard
               key={id}
+              id={id}
               brand={brand}
               model={model}
               generation={generation}

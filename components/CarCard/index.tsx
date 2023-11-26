@@ -2,8 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
+  id: string;
   brand: string;
   model: string;
   generation: string;
@@ -13,6 +15,7 @@ type Props = {
 };
 
 export const CarCard = async ({
+  id,
   brand,
   model,
   generation,
@@ -21,7 +24,7 @@ export const CarCard = async ({
   price,
 }: Props) => {
   return (
-    <div className="md:min-w-full min-w-[350px]">
+    <Link className="md:min-w-full min-w-[350px]" href={`/cars/${id}`}>
       <div
         className={cn(
           "px-8 pt-4 pb-2 rounded-t-2xl bg-gray-200",
@@ -61,6 +64,6 @@ export const CarCard = async ({
           <b>${price}</b>/day
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
