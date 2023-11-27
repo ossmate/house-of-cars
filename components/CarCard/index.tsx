@@ -3,7 +3,9 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { DropdownMenu } from "../DropdownMenu";
+import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type Props = {
   id: string;
@@ -24,6 +26,21 @@ export const CarCard = async ({
   isHighlighted,
   price,
 }: Props) => {
+  const { push } = useRouter();
+
+  async function removeCar(carId: string) {
+    try {
+      await fetch(`http://localhost:5000/api/cars/${carId}`, {
+        method: "DELETE",
+      });
+
+      revalidatePath("/cars", "page");
+      push(`/cars`);
+    } catch (e) {
+      return { message: "Failed to remove car" };
+    }
+  }
+
   return (
     <Link className="md:min-w-full min-w-[350px]" href={`/cars/${id}`}>
       <div
@@ -34,22 +51,30 @@ export const CarCard = async ({
           isHighlighted && brand === "Porsche" && "bg-pink-200",
         )}
       >
-        <div className="flex justify-start items-center">
-          <Image
-            width="35"
-            height="35"
-            alt="brand"
-            src={`/cars/logos/${brand.split(" ")[0]}.png`}
-            className="mr-2"
+        <div className="flex justify-between items-center">
+          <div className="flex justify-start items-center">
+            <Image
+              width="35"
+              height="35"
+              alt="brand"
+              src={`/cars/logos/${brand.split(" ")[0]}.png`}
+              className="mr-2"
+            />
+            <span>
+              <h2 className="font-bold">
+                {brand} {model}
+              </h2>
+              <p className="text-xs">
+                {generation} {engine}
+              </p>
+            </span>
+          </div>
+
+          <DropdownMenu
+            actions={[
+              { id: "1", label: "Remove", onClick: () => removeCar(id) },
+            ]}
           />
-          <span>
-            <h2 className="font-bold">
-              {brand} {model}
-            </h2>
-            <p className="text-xs">
-              {generation} {engine}
-            </p>
-          </span>
         </div>
         <Image width="300" height="300" alt="m3" src="/cars/m3/main.png" />
       </div>
