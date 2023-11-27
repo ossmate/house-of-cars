@@ -4,6 +4,9 @@ import { z } from "zod";
 import { Brand } from "@/app/settings/page";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const createCarSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
@@ -16,33 +19,51 @@ const createCarSchema = z.object({
 
 type CreateCarTypeSchema = z.infer<typeof createCarSchema>;
 
-export async function createCar(formData: CreateCarTypeSchema) {
-  const result = createCarSchema.safeParse(formData);
-
-  if (!result.success) {
-    throw new Error(
-      `An error occurred while parsing the create car form data.`,
-    );
-  }
-
-  try {
-    await fetch("http://localhost:5000/api/cars", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...formData }),
-    });
-  } catch (e) {
-    return { message: "Failed to create todo" };
-  }
-}
-
 export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
+  const { push } = useRouter();
+  const [status, setStatus] = useState<
+    "idle" | "pending" | "resolved" | "rejected"
+  >("idle");
+
+  const isPending = status === "pending";
+
+  async function createCar(formData: CreateCarTypeSchema) {
+    setStatus("pending");
+
+    const result = createCarSchema.safeParse(formData);
+
+    if (!result.success) {
+      throw new Error(
+        `An error occurred while parsing the create car form data.`,
+      );
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/cars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...formData }),
+      });
+
+      const {
+        data: { id },
+      } = await res.json();
+
+      setStatus("resolved");
+
+      push(`/cars/${id}`);
+    } catch (e) {
+      setStatus("rejected");
+      return { message: "Failed to create todo" };
+    }
+  }
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<CreateCarTypeSchema>({
     resolver: zodResolver(createCarSchema),
     defaultValues: {
@@ -61,6 +82,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <label htmlFor="brand">Brand</label>
         <select
           id="brand"
+          disabled={isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("brand")}
         >
@@ -78,6 +100,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="model"
           type="text"
+          disabled={isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("model")}
         />
@@ -89,6 +112,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="generation"
           type="text"
+          disabled={isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("generation")}
         />
@@ -100,6 +124,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="engine"
           type="text"
+          disabled={isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("engine")}
         />
@@ -111,6 +136,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="price"
           type="number"
+          disabled={isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("price", { valueAsNumber: true })}
         />
@@ -118,9 +144,11 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
           <p className="text-sm text-red-400">{errors?.price?.message}</p>
         )}
 
+        <label htmlFor="isHighlighted">Should highlight offer?</label>
         <select
           id="isHighlighted"
-          className="mt-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          disabled={isPending}
+          className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("isHighlighted", {
             required: false,
           })}
@@ -129,12 +157,13 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
           <option value="false">False</option>
         </select>
 
-        <button
+        <Button
           type="submit"
-          className="flex justify-center mt-5 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          disabled={isPending || !isDirty}
+          className="flex justify-center mt-5 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
         >
-          create
-        </button>
+          Submit
+        </Button>
       </form>
     </div>
   );
