@@ -31,6 +31,7 @@ export default async function Home() {
         {data.map(
           ({ id, brand, model, generation, engine, isHighlighted, price }) => (
             <CarCard
+              id={id}
               key={id}
               brand={brand}
               model={model}
