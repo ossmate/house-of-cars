@@ -1,5 +1,5 @@
+import { Car } from "@/app/api/car/useGetCars";
 import { CarCard } from "@/components/CarCard";
-import { Car } from "../page";
 
 type Props = {
   params: {

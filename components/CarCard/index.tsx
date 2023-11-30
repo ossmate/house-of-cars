@@ -4,8 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { DropdownMenu } from "../DropdownMenu";
-import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { useRemoveCarMutation } from "@/app/api/car/useRemoveCarMutation";
 
 type Props = {
   id: string;
@@ -17,7 +16,7 @@ type Props = {
   price: number;
 };
 
-export const CarCard = async ({
+export const CarCard = ({
   id,
   brand,
   model,
@@ -26,20 +25,7 @@ export const CarCard = async ({
   isHighlighted,
   price,
 }: Props) => {
-  const { push } = useRouter();
-
-  async function removeCar(carId: string) {
-    try {
-      await fetch(`http://localhost:5000/api/cars/${carId}`, {
-        method: "DELETE",
-      });
-
-      revalidatePath("/cars", "page");
-      push(`/cars`);
-    } catch (e) {
-      return { message: "Failed to remove car" };
-    }
-  }
+  const { removeCarMutation } = useRemoveCarMutation();
 
   return (
     <Link className="md:min-w-full min-w-[350px]" href={`/cars/${id}`}>
@@ -72,7 +58,11 @@ export const CarCard = async ({
 
           <DropdownMenu
             actions={[
-              { id: "1", label: "Remove", onClick: () => removeCar(id) },
+              {
+                id: "1",
+                label: "Remove",
+                onClick: () => removeCarMutation.mutate(id),
+              },
             ]}
           />
         </div>
