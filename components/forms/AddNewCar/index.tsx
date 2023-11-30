@@ -1,12 +1,13 @@
 "use client";
-import { z } from "zod";
 
-import { Brand } from "@/app/settings/page";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
+import { Brand } from "@/app/settings/page";
 import { Button } from "@/components/ui/button";
+import { useCreateCarMutation } from "@/app/api/car/useCreateCarMutation";
 
 const createCarSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
@@ -21,15 +22,10 @@ type CreateCarTypeSchema = z.infer<typeof createCarSchema>;
 
 export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
   const { push } = useRouter();
-  const [status, setStatus] = useState<
-    "idle" | "pending" | "resolved" | "rejected"
-  >("idle");
 
-  const isPending = status === "pending";
+  const { createCarMutation } = useCreateCarMutation();
 
-  async function createCar(formData: CreateCarTypeSchema) {
-    setStatus("pending");
-
+  const handleCreateNewCar = (formData: CreateCarTypeSchema) => {
     const result = createCarSchema.safeParse(formData);
 
     if (!result.success) {
@@ -38,27 +34,12 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
       );
     }
 
-    try {
-      const res = await fetch("http://localhost:5000/api/cars", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...formData }),
-      });
-
-      const {
-        data: { id },
-      } = await res.json();
-
-      setStatus("resolved");
-
-      push(`/cars/${id}`);
-    } catch (e) {
-      setStatus("rejected");
-      return { message: "Failed to create todo" };
-    }
-  }
+    createCarMutation.mutate(formData, {
+      onSuccess: (data) => {
+        push(`/cars/${data?.data?.id}`);
+      },
+    });
+  };
 
   const {
     register,
@@ -78,11 +59,14 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(createCar)} className="flex flex-col">
+      <form
+        onSubmit={handleSubmit(handleCreateNewCar)}
+        className="flex flex-col"
+      >
         <label htmlFor="brand">Brand</label>
         <select
           id="brand"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("brand")}
         >
@@ -100,7 +84,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="model"
           type="text"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("model")}
         />
@@ -112,7 +96,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="generation"
           type="text"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("generation")}
         />
@@ -124,7 +108,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="engine"
           type="text"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("engine")}
         />
@@ -136,7 +120,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <input
           id="price"
           type="number"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("price", { valueAsNumber: true })}
         />
@@ -147,7 +131,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <label htmlFor="isHighlighted">Should highlight offer?</label>
         <select
           id="isHighlighted"
-          disabled={isPending}
+          disabled={createCarMutation.isPending}
           className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("isHighlighted", {
             required: false,
@@ -159,7 +143,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
 
         <Button
           type="submit"
-          disabled={isPending || !isDirty}
+          disabled={createCarMutation.isPending || !isDirty}
           className="flex justify-center mt-5 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
         >
           Submit

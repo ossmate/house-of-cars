@@ -10,6 +10,8 @@ export type Car = {
   price: number;
 };
 
+export const getCarsQueryKey = "cars";
+
 export const useGetCars = ({
   onlyHighlighted = false,
 }: {
@@ -21,7 +23,7 @@ export const useGetCars = ({
     ).then((res) => res.json());
 
   const getCarsQuery = useQuery<{ data: Car[] }>({
-    queryKey: ["cars"],
+    queryKey: [getCarsQueryKey],
     queryFn: () => getCarsRequest(),
   });
 

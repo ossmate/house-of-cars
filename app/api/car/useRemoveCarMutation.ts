@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCarsQueryKey } from "./useGetCars";
 
 export const useRemoveCarMutation = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export const useRemoveCarMutation = () => {
     mutationFn: (carId: string) => removeCarRequest(carId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["cars"],
+        queryKey: [getCarsQueryKey],
       });
     },
   });
