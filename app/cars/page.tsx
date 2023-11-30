@@ -7,7 +7,7 @@ import { useGetCars } from "../api/car/useGetCars";
 export default function Cars() {
   const {
     getCarsQuery: { data },
-  } = useGetCars();
+  } = useGetCars({});
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">

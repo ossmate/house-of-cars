@@ -10,7 +10,11 @@ export type Car = {
   price: number;
 };
 
-export const useGetCars = (onlyHighlighted?: boolean) => {
+export const useGetCars = ({
+  onlyHighlighted = false,
+}: {
+  onlyHighlighted?: boolean;
+}) => {
   const getCarsRequest = () =>
     fetch(
       `http://localhost:5000/api/cars?onlyHighlighted=${onlyHighlighted}`,
