@@ -17,7 +17,6 @@ export async function createTodo(prevState: any, formData: FormData) {
   const data = parse.data;
 
   try {
-    console.log(data.todo, "@@@@");
     return { message: `Added todo ${data.todo}` };
   } catch (e) {
     return { message: "Failed to create todo" };
