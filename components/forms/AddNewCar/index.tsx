@@ -36,7 +36,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
 
     createCarMutation.mutate(formData, {
       onSuccess: (data) => {
-        push(`/cars/${data?.data?.id}`);
+        push(`/cars/${data?.data?.id}?singleCarView=true`);
       },
     });
   };

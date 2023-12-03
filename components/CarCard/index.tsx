@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DropdownMenu } from "../DropdownMenu";
 import { useRemoveCarMutation } from "@/app/api/car/useRemoveCarMutation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   id: string;
@@ -25,10 +26,25 @@ export const CarCard = ({
   isHighlighted,
   price,
 }: Props) => {
+  const { push } = useRouter();
+  const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
 
+  const onRemoveCarClick = (carId: string) => {
+    removeCarMutation.mutate(carId, {
+      onSuccess: () => {
+        if (isSingleCarView) {
+          push("/cars");
+        }
+      },
+    });
+  };
+
   return (
-    <Link className="md:min-w-full min-w-[350px]" href={`/cars/${id}`}>
+    <Link
+      className="md:min-w-full min-w-[350px]"
+      href={`/cars/${id}?singleCarView=true`}
+    >
       <div
         className={cn(
           "px-8 pt-4 pb-2 rounded-t-2xl bg-gray-200",
@@ -61,7 +77,7 @@ export const CarCard = ({
               {
                 id: "1",
                 label: "Remove",
-                onClick: () => removeCarMutation.mutate(id),
+                onClick: () => onRemoveCarClick(id),
               },
             ]}
           />
