@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 import { CarCard } from "@/components/CarCard";
 
 import { useGetCars } from "../api/car/useGetCars";
@@ -30,10 +28,20 @@ export default function Cars() {
 
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
         {data?.data.map(
-          ({ id, brand, model, generation, engine, isHighlighted, price }) => (
+          ({
+            id,
+            brand,
+            brandId,
+            model,
+            generation,
+            engine,
+            isHighlighted,
+            price,
+          }) => (
             <CarCard
               key={id}
               id={id}
+              brandId={brandId}
               brand={brand}
               model={model}
               generation={generation}

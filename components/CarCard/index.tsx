@@ -6,15 +6,18 @@ import Link from "next/link";
 import { DropdownMenu } from "../DropdownMenu";
 import { useRemoveCarMutation } from "@/app/api/car/useRemoveCarMutation";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Brand } from "@/app/settings/page";
 
 type Props = {
   id: string;
-  brand: string;
+  createdAt?: string;
+  brandId: string;
   model: string;
   generation: string;
   engine: string;
   isHighlighted: boolean;
   price: number;
+  brand: Brand;
 };
 
 export const CarCard = ({
@@ -48,9 +51,9 @@ export const CarCard = ({
       <div
         className={cn(
           "px-8 pt-4 pb-2 rounded-t-2xl bg-gray-200",
-          isHighlighted && brand === "BMW" && "bg-green-200",
-          isHighlighted && brand === "Mercedes" && "bg-blue-200",
-          isHighlighted && brand === "Porsche" && "bg-pink-200",
+          isHighlighted && brand.name === "BMW" && "bg-green-200",
+          isHighlighted && brand.name === "Mercedes" && "bg-blue-200",
+          isHighlighted && brand.name === "Porsche" && "bg-pink-200",
         )}
       >
         <div className="flex justify-between items-center">
@@ -58,13 +61,13 @@ export const CarCard = ({
             <Image
               width="35"
               height="35"
-              alt="brand"
-              src={`/cars/logos/${brand.split(" ")[0]}.png`}
+              alt="brand.name"
+              src={`/cars/logos/${brand.name.split(" ")[0]}.png`}
               className="mr-2"
             />
             <span>
               <h2 className="font-bold">
-                {brand} {model}
+                {brand.name} {model}
               </h2>
               <p className="text-xs">
                 {generation} {engine}
@@ -87,9 +90,9 @@ export const CarCard = ({
       <div
         className={cn(
           "rounded-b-xl p-4 flex justify-end bg-gray-300",
-          isHighlighted && brand === "BMW" && "bg-green-300",
-          isHighlighted && brand === "Mercedes" && "bg-blue-300",
-          isHighlighted && brand === "Porsche" && "bg-pink-300",
+          isHighlighted && brand.name === "BMW" && "bg-green-300",
+          isHighlighted && brand.name === "Mercedes" && "bg-blue-300",
+          isHighlighted && brand.name === "Porsche" && "bg-pink-300",
         )}
       >
         <p>

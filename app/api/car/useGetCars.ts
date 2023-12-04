@@ -1,13 +1,16 @@
+import { Brand } from "@/app/settings/page";
 import { useQuery } from "@tanstack/react-query";
 
 export type Car = {
   id: string;
-  brand: string;
+  createdAt: string;
+  brandId: string;
   model: string;
   generation: string;
   engine: string;
   isHighlighted: boolean;
   price: number;
+  brand: Brand;
 };
 
 export const getCarsQueryKey = "cars";
