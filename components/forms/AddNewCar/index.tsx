@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateCarMutation } from "@/app/api/car/useCreateCarMutation";
 
 const createCarSchema = z.object({
-  brand: z.string().min(1, "Brand is required"),
+  brandId: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model name is required"),
   generation: z.string().min(1, "Generation name is required"),
   engine: z.string().min(1, "Engine name is required"),
@@ -48,7 +48,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
   } = useForm<CreateCarTypeSchema>({
     resolver: zodResolver(createCarSchema),
     defaultValues: {
-      brand: "",
+      brandId: "",
       model: "",
       generation: "",
       engine: "",
@@ -63,21 +63,21 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         onSubmit={handleSubmit(handleCreateNewCar)}
         className="flex flex-col"
       >
-        <label htmlFor="brand">Brand</label>
+        <label htmlFor="brandId">Brand</label>
         <select
-          id="brand"
+          id="brandId"
           disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          {...register("brand")}
+          {...register("brandId")}
         >
           {brands.map(({ id, name }) => (
-            <option key={id} value={name}>
+            <option key={id} value={id}>
               {name}
             </option>
           ))}
         </select>
-        {errors?.brand?.message && (
-          <p className="text-sm text-red-400">{errors?.brand?.message}</p>
+        {errors?.brandId?.message && (
+          <p className="text-sm text-red-400">{errors?.brandId?.message}</p>
         )}
 
         <label htmlFor="model">Model</label>

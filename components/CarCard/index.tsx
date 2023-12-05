@@ -62,7 +62,7 @@ export const CarCard = ({
               width="35"
               height="35"
               alt="brand.name"
-              src={brand.imageUrl}
+              src={brand?.imageUrl}
               className="mr-2"
             />
             <span>

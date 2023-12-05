@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getCarsQueryKey } from "./useGetCars";
 
 export const createCarSchema = z.object({
-  brand: z.string().min(1, "Brand is required"),
+  brandId: z.string().min(1, "Brand is required"),
   model: z.string().min(1, "Model name is required"),
   generation: z.string().min(1, "Generation name is required"),
   engine: z.string().min(1, "Engine name is required"),
