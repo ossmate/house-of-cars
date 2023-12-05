@@ -62,7 +62,7 @@ export const CarCard = ({
               width="35"
               height="35"
               alt="brand.name"
-              src={`/cars/logos/${brand.name.split(" ")[0]}.png`}
+              src={brand?.imageUrl}
               className="mr-2"
             />
             <span>
