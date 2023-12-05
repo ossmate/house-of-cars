@@ -2,6 +2,7 @@
 
 import { useCreateBrandMutation } from "@/app/api/brand/useCreateBrandMutation";
 import { Button } from "@/components/ui/button";
+import { uploadImageToCloudinary } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -27,25 +28,10 @@ export const AddNewBrand = () => {
       );
     }
 
-    let imageUrl;
-
-    const cloudinaryFormData = new FormData();
-    cloudinaryFormData.append("file", formData.image);
-    cloudinaryFormData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET as string,
-    );
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: cloudinaryFormData,
-      },
-    );
-
-    const file = await response.json();
-    imageUrl = file.secure_url;
+    let imageUrl = "";
+    if (formData.image) {
+      imageUrl = await uploadImageToCloudinary(formData.image);
+    }
 
     createBrandMutation.mutate({ name: formData.name, imageUrl });
   };

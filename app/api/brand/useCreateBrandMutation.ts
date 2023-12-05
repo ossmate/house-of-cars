@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import { getBrandsQueryKey } from "./getBrandsQuery";
 
-// Define the schema for creating a brand
 export const createBrandSchema = z.object({
   name: z.string().min(1, "Brand name is required"),
   imageUrl: z.string().url().optional(), // Updated to accept a URL string
@@ -29,10 +29,9 @@ export const useCreateBrandMutation = () => {
     mutationFn: (formData: CreateBrandTypeSchema) =>
       createBrandRequest(formData),
     onSuccess: () => {
-      // Adjust the queryKey to match the one used for fetching brands
-      // queryClient.invalidateQueries({
-      //   queryKey: ["brandsQueryKey"], // Replace with your actual query key for brands
-      // });
+      queryClient.invalidateQueries({
+        queryKey: [getBrandsQueryKey],
+      });
     },
   });
 
