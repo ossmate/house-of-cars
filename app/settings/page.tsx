@@ -1,3 +1,4 @@
+import { BrandsTable } from "@/components/BrandsTable";
 import { AddNewBrand } from "@/components/forms/AddNewBrand";
 import { AddNewCar } from "@/components/forms/AddNewCar";
 
@@ -23,6 +24,8 @@ export default async function Settings() {
       <br />
 
       <AddNewBrand />
+
+      <BrandsTable />
     </main>
   );
 }
