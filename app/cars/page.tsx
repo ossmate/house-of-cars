@@ -1,14 +1,18 @@
 "use client";
 
+import Image from "next/image";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { CarCard } from "@/components/CarCard";
 
 import { useGetCars } from "../api/car/useGetCars";
 import { useGetBrandsQuery } from "../api/brand/getBrandsQuery";
 
 export default function Cars() {
+  const [activeBrand, setActiveBrand] = useState("");
   const {
     getCarsQuery: { data },
-  } = useGetCars({});
+  } = useGetCars({ brandId: activeBrand });
 
   const {
     getBrandsQuery: { data: brands },
@@ -18,10 +22,18 @@ export default function Cars() {
     <main className="flex min-h-screen flex-col items-center p-24">
       <div className="flex">
         {brands?.data?.map(({ id, name, imageUrl }) => (
-          <div key={id} className="mb-5 p-4 mx-2 bg-blue-400">
-            {name}
-
-            <img width="50" height="50" src={imageUrl} alt={name} />
+          <div
+            key={id}
+            className={cn(
+              "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center",
+              activeBrand === id && "bg-pink-200",
+            )}
+            onClick={() => setActiveBrand(id)}
+          >
+            <span>{name}</span>
+            <div>
+              <Image width="100" height="100" src={imageUrl} alt={name} />
+            </div>
           </div>
         ))}
       </div>
