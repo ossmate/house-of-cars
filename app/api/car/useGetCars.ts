@@ -18,12 +18,13 @@ export const getCarsQueryKey = "cars";
 
 export const useGetCars = ({
   onlyHighlighted = false,
-  brandId,
+  brandId = null,
 }: {
   onlyHighlighted?: boolean;
-  brandId?: string;
+  brandId?: string | null;
 }) => {
   const query = qs.stringify({ onlyHighlighted, brandId }, { skipNulls: true });
+
   const getCarsRequest = () =>
     fetch(`http://localhost:5000/api/cars?${query}`).then((res) => res.json());
 

@@ -9,7 +9,7 @@ import { useGetCars } from "../api/car/useGetCars";
 import { useGetBrandsQuery } from "../api/brand/getBrandsQuery";
 
 export default function Cars() {
-  const [activeBrand, setActiveBrand] = useState("");
+  const [activeBrand, setActiveBrand] = useState<string | null>(null);
   const {
     getCarsQuery: { data },
   } = useGetCars({ brandId: activeBrand });
