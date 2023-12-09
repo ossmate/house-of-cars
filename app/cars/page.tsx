@@ -11,7 +11,7 @@ import { useGetBrandsQuery } from "../api/brand/getBrandsQuery";
 export default function Cars() {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
   const {
-    getCarsQuery: { data },
+    getCarsQuery: { data: cars, isLoading: isCarsLoading },
   } = useGetCars({ brandId: activeBrand });
 
   const {
@@ -25,7 +25,7 @@ export default function Cars() {
           <div
             key={id}
             className={cn(
-              "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center",
+              "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center hover:bg-pink-100 transition-colors cursor-pointer",
               activeBrand === id && "bg-pink-200",
             )}
             onClick={() => setActiveBrand(id)}
@@ -38,8 +38,15 @@ export default function Cars() {
         ))}
       </div>
 
+      {cars?.data.length === 0 && !isCarsLoading && (
+        <p>
+          oops, looks like there are no cars for brand{" "}
+          {brands?.data.find(({ id }) => id === activeBrand)?.name}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
-        {data?.data.map(
+        {cars?.data.map(
           ({
             id,
             brand,
