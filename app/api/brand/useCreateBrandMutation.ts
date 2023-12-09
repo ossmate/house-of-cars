@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getBrandsQueryKey } from "./getBrandsQuery";
+import { createAPIPath } from "@/lib/utils";
 
 export const createBrandSchema = z.object({
   name: z.string().min(1, "Brand name is required"),
@@ -16,7 +17,7 @@ export const useCreateBrandMutation = () => {
   const createBrandRequest = (
     formData: CreateBrandTypeSchema,
   ): Promise<{ data: CreateBrandResponse }> => {
-    return fetch("http://localhost:5000/api/brands", {
+    return fetch(`${createAPIPath()}/api/brands`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

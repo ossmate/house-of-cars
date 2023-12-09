@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getBrandsQueryKey } from "./getBrandsQuery";
+import { createAPIPath } from "@/lib/utils";
 
 export const useRemoveBrandMutation = () => {
   const queryClient = useQueryClient();
   const removeBrandRequest = (brandId: string) =>
-    fetch(`http://localhost:5000/api/brands/${brandId}`, {
+    fetch(`${createAPIPath()}/api/brands/${brandId}`, {
       method: "DELETE",
     });
 

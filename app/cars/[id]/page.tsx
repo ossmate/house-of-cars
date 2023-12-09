@@ -1,5 +1,6 @@
 import { Car } from "@/app/api/car/useGetCars";
 import { CarCard } from "@/components/CarCard";
+import { createAPIPath } from "@/lib/utils";
 
 type Props = {
   params: {
@@ -8,7 +9,7 @@ type Props = {
 };
 
 export const getCar = async (id: string): Promise<{ data: Car }> => {
-  const res = await fetch(`http://localhost:5000/api/cars/${id}`);
+  const res = await fetch(`${createAPIPath()}/api/cars/${id}`);
 
   return res.json();
 };

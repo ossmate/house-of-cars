@@ -1,5 +1,6 @@
 "use server";
 
+import { createAPIPath } from "@/lib/utils";
 import { z } from "zod";
 
 export async function createTodo(prevState: any, formData: FormData) {
@@ -49,7 +50,7 @@ export async function createTodo2(_prevState: any, formData: FormData) {
   const { brand, model, generation, engine, price, isHighlighted } = parse.data;
 
   try {
-    await fetch("http://localhost:5000", {
+    await fetch(`${createAPIPath()}`, {
       method: "POST",
       body: JSON.stringify({
         brand,

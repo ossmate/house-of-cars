@@ -1,6 +1,7 @@
 import qs from "qs";
 import { Brand } from "@/app/settings/page";
 import { useQuery } from "@tanstack/react-query";
+import { createAPIPath } from "@/lib/utils";
 
 export type Car = {
   id: string;
@@ -26,7 +27,7 @@ export const useGetCars = ({
   const query = qs.stringify({ onlyHighlighted, brandId }, { skipNulls: true });
 
   const getCarsRequest = () =>
-    fetch(`http://localhost:5000/api/cars?${query}`).then((res) => res.json());
+    fetch(`${createAPIPath()}/api/cars?${query}`).then((res) => res.json());
 
   const getCarsQuery = useQuery<{ data: Car[] }>({
     queryKey: [getCarsQueryKey, onlyHighlighted, brandId],

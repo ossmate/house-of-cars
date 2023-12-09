@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getCarsQueryKey } from "./useGetCars";
+import { createAPIPath } from "@/lib/utils";
 
 export const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),
@@ -20,7 +21,7 @@ export const useCreateCarMutation = () => {
   const createCarRequest = (
     formData: CreateCarTypeSchema,
   ): Promise<{ data: CreateCarResponse }> =>
-    fetch("http://localhost:5000/api/cars", {
+    fetch(`${createAPIPath()}/api/cars`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

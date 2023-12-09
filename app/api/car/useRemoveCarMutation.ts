@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCarsQueryKey } from "./useGetCars";
+import { createAPIPath } from "@/lib/utils";
 
 export const useRemoveCarMutation = () => {
   const queryClient = useQueryClient();
   const removeCarRequest = (carId: string) =>
-    fetch(`http://localhost:5000/api/cars/${carId}`, {
+    fetch(`${createAPIPath()}/api/cars/${carId}`, {
       method: "DELETE",
     });
 

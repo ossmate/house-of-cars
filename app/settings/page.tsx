@@ -1,6 +1,7 @@
 import { BrandsTable } from "@/components/BrandsTable";
 import { AddNewBrand } from "@/components/forms/AddNewBrand";
 import { AddNewCar } from "@/components/forms/AddNewCar";
+import { createAPIPath } from "@/lib/utils";
 
 export type Brand = {
   id: string;
@@ -9,7 +10,7 @@ export type Brand = {
 };
 
 const getBrands = async (): Promise<{ data: Brand[] }> => {
-  const res = await fetch(`http://localhost:5000/api/brands`);
+  const res = await fetch(`${createAPIPath()}/api/brands`);
 
   return res.json();
 };
