@@ -5,6 +5,7 @@ type Brand = {
   id: string;
   name: string;
   imageUrl: string;
+  carsCount: number;
 };
 
 export const getBrandsQueryKey = "brands";

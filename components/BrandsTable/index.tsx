@@ -35,11 +35,12 @@ export const BrandsTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {brands?.data?.map(({ id, name, imageUrl }) => (
+        {brands?.data?.map(({ id, name, imageUrl, carsCount }) => (
           <TableRow key={id}>
             <TableCell className="font-medium">{id}</TableCell>
             <TableCell>{name}</TableCell>
             <TableCell>{imageUrl}</TableCell>
+            <TableCell>{carsCount}</TableCell>
             <TableCell>
               <DropdownMenu
                 actions={[
