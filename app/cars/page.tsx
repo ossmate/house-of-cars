@@ -7,6 +7,8 @@ import { CarCard } from "@/components/CarCard";
 
 import { useGetCars } from "../api/car/useGetCars";
 import { useGetBrandsQuery } from "../api/brand/getBrandsQuery";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CarCardSkeleton } from "@/components/CarCard/CarCardSkeleton";
 
 export default function Cars() {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
@@ -48,30 +50,36 @@ export default function Cars() {
         </p>
       )}
 
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6"></div>
+
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
-        {cars?.data.map(
-          ({
-            id,
-            brand,
-            brandId,
-            model,
-            generation,
-            engine,
-            isHighlighted,
-            price,
-          }) => (
-            <CarCard
-              key={id}
-              id={id}
-              brandId={brandId}
-              brand={brand}
-              model={model}
-              generation={generation}
-              engine={engine}
-              isHighlighted={isHighlighted}
-              price={price}
-            />
-          ),
+        {isCarsLoading ? (
+          <CarCardSkeleton />
+        ) : (
+          cars?.data.map(
+            ({
+              id,
+              brand,
+              brandId,
+              model,
+              generation,
+              engine,
+              isHighlighted,
+              price,
+            }) => (
+              <CarCard
+                key={id}
+                id={id}
+                brandId={brandId}
+                brand={brand}
+                model={model}
+                generation={generation}
+                engine={engine}
+                isHighlighted={isHighlighted}
+                price={price}
+              />
+            ),
+          )
         )}
       </div>
     </main>
