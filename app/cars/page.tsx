@@ -17,30 +17,42 @@ export default function Cars() {
   } = useGetCars({ brandId: activeBrand });
 
   const {
-    getBrandsQuery: { data: brands },
+    getBrandsQuery: { data: brands, isLoading: isBrandsLoading },
   } = useGetBrandsQuery();
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
       <div className="flex">
-        {brands?.data?.map(
-          ({ id, name, imageUrl, carsCount }) =>
-            carsCount > 0 && (
-              <div
-                key={id}
-                className={cn(
-                  "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center hover:bg-pink-100 transition-colors cursor-pointer",
-                  activeBrand === id && "bg-pink-200",
-                )}
-                onClick={() => setActiveBrand(id)}
-              >
-                <span>{name}</span>
-                <div>
-                  <Image width="100" height="100" src={imageUrl} alt={name} />
-                </div>
-              </div>
-            ),
-        )}
+        {isBrandsLoading
+          ? Array.from({ length: 3 }, (_, index) => (
+              <Skeleton
+                key={index}
+                className="mx-3 mb-3 min-w-[150px] h-[150px]"
+              />
+            ))
+          : brands?.data?.map(
+              ({ id, name, imageUrl, carsCount }) =>
+                carsCount > 0 && (
+                  <div
+                    key={id}
+                    className={cn(
+                      "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center hover:bg-pink-100 transition-colors cursor-pointer",
+                      activeBrand === id && "bg-pink-200",
+                    )}
+                    onClick={() => setActiveBrand(id)}
+                  >
+                    <span>{name}</span>
+                    <div>
+                      <Image
+                        width="100"
+                        height="100"
+                        src={imageUrl}
+                        alt={name}
+                      />
+                    </div>
+                  </div>
+                ),
+            )}
       </div>
 
       {cars?.data.length === 0 && !isCarsLoading && (
