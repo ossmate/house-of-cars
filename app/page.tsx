@@ -1,4 +1,4 @@
-import { MainPageCars } from "@/components/MainPageCars";
+import { CarsList } from "@/components/CarsList";
 import { getCars } from "./actions/getCars";
 
 export default async function Home() {
@@ -6,7 +6,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <MainPageCars cars={data} />
+      <CarsList cars={data} onlyHighlighted={true} />
     </main>
   );
 }
