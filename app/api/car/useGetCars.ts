@@ -17,21 +17,27 @@ export type Car = {
 
 export const getCarsQueryKey = "cars";
 
+export const getCarsRequest = (params?: QueryParams) => {
+  const query = qs.stringify(params, { skipNulls: true });
+  return fetch(`${createAPIPath()}/api/cars?${query}`).then((res) =>
+    res.json(),
+  );
+};
+
+type QueryParams = {
+  onlyHighlighted?: boolean;
+  brandId?: string | null;
+};
+
 export const useGetCars = ({
   onlyHighlighted = false,
   brandId = null,
-}: {
-  onlyHighlighted?: boolean;
-  brandId?: string | null;
-}) => {
-  const query = qs.stringify({ onlyHighlighted, brandId }, { skipNulls: true });
-
-  const getCarsRequest = () =>
-    fetch(`${createAPIPath()}/api/cars?${query}`).then((res) => res.json());
-
+  initialData,
+}: QueryParams & { initialData?: Car[] }) => {
   const getCarsQuery = useQuery<{ data: Car[] }>({
     queryKey: [getCarsQueryKey, onlyHighlighted, brandId],
-    queryFn: () => getCarsRequest(),
+    queryFn: () => getCarsRequest({ onlyHighlighted, brandId }),
+    initialData: initialData ? { data: initialData } : undefined,
   });
 
   return { getCarsQuery };
