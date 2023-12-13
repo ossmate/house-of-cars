@@ -6,16 +6,22 @@ import { cn } from "@/lib/utils";
 
 import { Skeleton } from "./ui/skeleton";
 import { useGetBrandsQuery } from "@/app/api/brand/getBrandsQuery";
+import { Brand } from "@/app/settings/page";
 
 type Props = {
+  initialBrands?: Brand[];
   activeBrand: string | null;
   setActiveBrand: Dispatch<SetStateAction<string | null>>;
 };
 
-export const BrandsList = ({ activeBrand, setActiveBrand }: Props) => {
+export const BrandsList = ({
+  initialBrands,
+  activeBrand,
+  setActiveBrand,
+}: Props) => {
   const {
     getBrandsQuery: { data: brands, isLoading: isBrandsLoading },
-  } = useGetBrandsQuery();
+  } = useGetBrandsQuery(initialBrands);
 
   return (
     <div className="flex">

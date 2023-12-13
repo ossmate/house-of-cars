@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCarsQueryKey } from "./useGetCars";
+import { getCarsQueryKey } from "./useCarsQuery";
 import { createAPIPath } from "@/lib/utils";
 
 export const useRemoveCarMutation = () => {

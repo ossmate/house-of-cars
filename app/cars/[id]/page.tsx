@@ -1,4 +1,4 @@
-import { Car } from "@/app/api/car/useGetCars";
+import { Car } from "@/app/api/car/useCarsQuery";
 import { CarCard } from "@/components/CarCard";
 import { createAPIPath } from "@/lib/utils";
 

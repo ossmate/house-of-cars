@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { getCarsQueryKey } from "./useGetCars";
+import { getCarsQueryKey } from "./useCarsQuery";
 import { createAPIPath } from "@/lib/utils";
 
 export const createCarSchema = z.object({

@@ -29,16 +29,16 @@ type QueryParams = {
   brandId?: string | null;
 };
 
-export const useGetCars = ({
+export const useCarsQuery = ({
   onlyHighlighted = false,
   brandId = null,
   initialData,
 }: QueryParams & { initialData?: Car[] }) => {
-  const getCarsQuery = useQuery<{ data: Car[] }>({
+  const carsQuery = useQuery<{ data: Car[] }>({
     queryKey: [getCarsQueryKey, onlyHighlighted, brandId],
     queryFn: () => getCarsRequest({ onlyHighlighted, brandId }),
     initialData: initialData ? { data: initialData } : undefined,
   });
 
-  return { getCarsQuery };
+  return { carsQuery };
 };

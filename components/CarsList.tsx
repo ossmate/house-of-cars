@@ -1,28 +1,31 @@
 "use client";
 
-import { Car, useGetCars } from "@/app/api/car/useGetCars";
+import { Car, useCarsQuery } from "@/app/api/car/useCarsQuery";
 import { CarCard } from "./CarCard";
 import { CarCardSkeleton } from "./CarCard/CarCardSkeleton";
 
 import { useState } from "react";
 import { BrandsList } from "./BrandsList";
+import { Brand } from "@/app/settings/page";
 
 type Props = {
   cars?: Car[];
   onlyHighlighted?: boolean;
   shouldDisplayBrandSelector?: boolean;
+  brands?: Brand[];
 };
 
 export const CarsList = ({
   cars,
   onlyHighlighted = false,
   shouldDisplayBrandSelector = false,
+  brands,
 }: Props) => {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
 
   const {
-    getCarsQuery: { data, isLoading, isError },
-  } = useGetCars({
+    carsQuery: { data, isLoading, isError },
+  } = useCarsQuery({
     onlyHighlighted: onlyHighlighted,
     brandId: shouldDisplayBrandSelector ? activeBrand : null,
     initialData: cars,
@@ -35,7 +38,11 @@ export const CarsList = ({
   return (
     <main className="flex min-h-screen flex-col items-center">
       {shouldDisplayBrandSelector && (
-        <BrandsList activeBrand={activeBrand} setActiveBrand={setActiveBrand} />
+        <BrandsList
+          initialBrands={brands}
+          activeBrand={activeBrand}
+          setActiveBrand={setActiveBrand}
+        />
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">

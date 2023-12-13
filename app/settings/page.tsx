@@ -7,6 +7,7 @@ export type Brand = {
   id: string;
   name: string;
   imageUrl: string;
+  carsCount: number;
 };
 
 const getBrands = async (): Promise<{ data: Brand[] }> => {
