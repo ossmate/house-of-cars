@@ -1,5 +1,5 @@
 import { Car } from "@/app/api/car/useCarsQuery";
-import { CarCard } from "@/components/CarCard";
+import { CarTile } from "@/components/CarTile";
 import { createAPIPath } from "@/lib/utils";
 
 type Props = {
@@ -19,7 +19,7 @@ const Car = async ({ params }: Props) => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <CarCard {...data} />
+      <CarTile {...data} />
     </main>
   );
 };
