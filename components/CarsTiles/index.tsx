@@ -1,12 +1,12 @@
 "use client";
 
 import { Car, useCarsQuery } from "@/app/api/car/useCarsQuery";
-import { CarCard } from "./CarCard";
-import { CarCardSkeleton } from "./CarCard/CarCardSkeleton";
+import { CarTile } from "../CarTile";
+import { CarTileSkeleton } from "../CarTile/CarTileSkeleton";
 
 import { useState } from "react";
-import { BrandsList } from "./BrandsList";
 import { Brand } from "@/app/settings/page";
+import { BrandTiles } from "../BrandTiles";
 
 type Props = {
   cars?: Car[];
@@ -15,7 +15,7 @@ type Props = {
   brands?: Brand[];
 };
 
-export const CarsList = ({
+export const CarsTiles = ({
   cars,
   onlyHighlighted = false,
   shouldDisplayBrandSelector = false,
@@ -31,14 +31,14 @@ export const CarsList = ({
     initialData: cars,
   });
 
-  if (isLoading) return <CarCardSkeleton />;
+  if (isLoading) return <CarTileSkeleton />;
 
   if (isError) return <div>Error!</div>;
 
   return (
     <main className="flex min-h-screen flex-col items-center">
       {shouldDisplayBrandSelector && (
-        <BrandsList
+        <BrandTiles
           initialBrands={brands}
           activeBrand={activeBrand}
           setActiveBrand={setActiveBrand}
@@ -57,7 +57,7 @@ export const CarsList = ({
             isHighlighted,
             price,
           }) => (
-            <CarCard
+            <CarTile
               id={id}
               key={id}
               brandId={brandId}

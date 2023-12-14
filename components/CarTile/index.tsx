@@ -20,7 +20,7 @@ type Props = {
   brand: Brand;
 };
 
-export const CarCard = ({
+export const CarTile = ({
   id,
   brand,
   model,
