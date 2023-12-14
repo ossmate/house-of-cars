@@ -1,4 +1,4 @@
-import { getCarsRequest } from "../api/car/useCarsQuery";
+import { getCarsRequest } from "./car/useCarsQuery";
 
 export async function getCars({
   onlyHighlighted,

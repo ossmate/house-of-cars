@@ -1,6 +1,6 @@
 "use client";
 
-import { Car, useCarsQuery } from "@/app/api/car/useCarsQuery";
+import { Car, useCarsQuery } from "@/app/server/actions/car/useCarsQuery";
 import { CarTile } from "../CarTile";
 import { CarTileSkeleton } from "../CarTile/CarTileSkeleton";
 

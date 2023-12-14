@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { Brand } from "@/app/settings/page";
 import { Button } from "@/components/ui/button";
-import { useCreateCarMutation } from "@/app/api/car/useCreateCarMutation";
+import { useCreateCarMutation } from "@/app/server/actions/car/useCreateCarMutation";
 
 const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),

@@ -1,4 +1,4 @@
-import { getBrandsRequest } from "../api/brand/getBrandsQuery";
+import { getBrandsRequest } from "../../api/brand/getBrandsQuery";
 
 export async function getBrands() {
   try {

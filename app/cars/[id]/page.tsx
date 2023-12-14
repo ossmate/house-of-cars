@@ -1,4 +1,4 @@
-import { Car } from "@/app/api/car/useCarsQuery";
+import { Car } from "@/app/server/actions/car/useCarsQuery";
 import { CarTile } from "@/components/CarTile";
 import { createAPIPath } from "@/lib/utils";
 

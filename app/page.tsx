@@ -1,12 +1,26 @@
 import { CarsTiles } from "@/components/CarsTiles";
-import { getCars } from "./actions/getCars";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
+import {
+  getCarsQueryKey,
+  getCarsRequest,
+} from "./server/actions/car/useCarsQuery";
 
 export default async function Home() {
-  const { data } = await getCars({ onlyHighlighted: true });
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: [getCarsQueryKey],
+    queryFn: () => getCarsRequest(),
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <CarsTiles cars={data} onlyHighlighted={true} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <CarsTiles onlyHighlighted={true} />
+      </HydrationBoundary>
     </main>
   );
 }

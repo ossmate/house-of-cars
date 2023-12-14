@@ -1,18 +1,29 @@
-import { getCars } from "../actions/getCars";
-import { getBrands } from "../actions/getBrands";
+import { getBrands } from "../server/actions/getBrands";
 import { CarsTiles } from "@/components/CarsTiles";
+import {
+  getCarsQueryKey,
+  getCarsRequest,
+} from "../server/actions/car/useCarsQuery";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 
 export default async function Cars() {
-  const { data } = await getCars({});
   const { data: brands } = await getBrands();
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: [getCarsQueryKey],
+    queryFn: () => getCarsRequest(),
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
-      <CarsTiles
-        cars={data}
-        shouldDisplayBrandSelector={true}
-        brands={brands}
-      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <CarsTiles shouldDisplayBrandSelector={true} brands={brands} />
+      </HydrationBoundary>
     </main>
   );
 }
