@@ -5,7 +5,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import { Skeleton } from "../ui/skeleton";
-import { useGetBrandsQuery } from "@/app/api/brand/getBrandsQuery";
+import { useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
 import { Brand } from "@/app/settings/page";
 import { BrandTilesSkeleton } from "./BrandTilesSekeleton";
 
@@ -21,8 +21,8 @@ export const BrandTiles = ({
   setActiveBrand,
 }: Props) => {
   const {
-    getBrandsQuery: { data: brands, isLoading: isBrandsLoading },
-  } = useGetBrandsQuery(initialBrands);
+    brandsQuery: { data: brands, isLoading: isBrandsLoading },
+  } = useBrandsQuery(initialBrands);
 
   return (
     <div className="flex">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetBrandsQuery } from "@/app/api/brand/getBrandsQuery";
+import { useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
 import {
   Table,
   TableBody,
@@ -15,8 +15,8 @@ import { useRemoveBrandMutation } from "@/app/api/brand/useRemoveBrandMutation";
 
 export const BrandsTable = () => {
   const {
-    getBrandsQuery: { data: brands },
-  } = useGetBrandsQuery();
+    brandsQuery: { data: brands },
+  } = useBrandsQuery();
 
   const { removeBrandMutation } = useRemoveBrandMutation();
 

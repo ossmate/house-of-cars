@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { getBrandsQueryKey } from "./getBrandsQuery";
+import { getBrandsQueryKey } from "./useBrandsQuery";
 import { createAPIPath } from "@/lib/utils";
 
 export const createBrandSchema = z.object({

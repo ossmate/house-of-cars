@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBrandsQueryKey } from "./getBrandsQuery";
+import { getBrandsQueryKey } from "./useBrandsQuery";
 import { createAPIPath } from "@/lib/utils";
 
 export const useRemoveBrandMutation = () => {
