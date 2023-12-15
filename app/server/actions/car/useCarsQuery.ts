@@ -44,7 +44,7 @@ type QueryParams = {
 };
 
 export const useCarsQuery = ({
-  onlyHighlighted = false,
+  onlyHighlighted = undefined,
   brandId = null,
 }: QueryParams & { initialData?: Car[] }) => {
   const carsQuery = useQuery<Car[]>({

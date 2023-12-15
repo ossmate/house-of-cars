@@ -16,7 +16,7 @@ type Props = {
 };
 
 export const CarsTiles = ({
-  onlyHighlighted = false,
+  onlyHighlighted = undefined,
   shouldDisplayBrandSelector = false,
   brands,
 }: Props) => {
@@ -25,7 +25,7 @@ export const CarsTiles = ({
   const {
     carsQuery: { data, isLoading, isError },
   } = useCarsQuery({
-    onlyHighlighted: onlyHighlighted,
+    ...(onlyHighlighted !== undefined && { onlyHighlighted: onlyHighlighted }),
     brandId: shouldDisplayBrandSelector ? activeBrand : null,
   });
 
