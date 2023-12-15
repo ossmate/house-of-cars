@@ -1,15 +1,15 @@
-import { getCarsRequest } from "./car/useCarsQuery";
+// import { getCarsRequest } from "./car/useCarsQuery";
 
-export async function getCars({
-  onlyHighlighted,
-}: {
-  onlyHighlighted?: boolean;
-}) {
-  try {
-    const { data } = await getCarsRequest({ onlyHighlighted });
+// export async function getCars({
+//   onlyHighlighted,
+// }: {
+//   onlyHighlighted?: boolean;
+// }) {
+//   try {
+//     const { data } = await getCarsRequest({ onlyHighlighted });
 
-    return data;
-  } catch (error) {
-    return { error };
-  }
-}
+//     return data;
+//   } catch (error) {
+//     return { error };
+//   }
+// }

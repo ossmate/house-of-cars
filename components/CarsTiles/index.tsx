@@ -16,7 +16,6 @@ type Props = {
 };
 
 export const CarsTiles = ({
-  cars,
   onlyHighlighted = false,
   shouldDisplayBrandSelector = false,
   brands,
@@ -28,7 +27,6 @@ export const CarsTiles = ({
   } = useCarsQuery({
     onlyHighlighted: onlyHighlighted,
     brandId: shouldDisplayBrandSelector ? activeBrand : null,
-    initialData: cars,
   });
 
   if (isLoading) return <CarTileSkeleton />;
@@ -46,7 +44,7 @@ export const CarsTiles = ({
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
-        {data?.data?.map(
+        {data?.map(
           ({
             id,
             brand,

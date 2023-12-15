@@ -17,11 +17,25 @@ export type Car = {
 
 export const getCarsQueryKey = "cars";
 
-export const getCarsRequest = (params?: QueryParams) => {
-  const query = qs.stringify(params, { skipNulls: true });
-  return fetch(`${createAPIPath()}/api/cars?${query}`).then((res) =>
-    res.json(),
-  );
+export const fetchCarsData = async ({
+  onlyHighlighted,
+  brandId,
+}: {
+  onlyHighlighted?: boolean;
+  brandId?: string | null;
+}) => {
+  try {
+    const queryParams = { onlyHighlighted, brandId };
+    const queryString = qs.stringify(queryParams, { skipNulls: true });
+
+    const response = await fetch(`${createAPIPath()}/api/cars?${queryString}`);
+    const { data } = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching cars:", error);
+    return { error };
+  }
 };
 
 type QueryParams = {
@@ -32,12 +46,10 @@ type QueryParams = {
 export const useCarsQuery = ({
   onlyHighlighted = false,
   brandId = null,
-  initialData,
 }: QueryParams & { initialData?: Car[] }) => {
-  const carsQuery = useQuery<{ data: Car[] }>({
+  const carsQuery = useQuery<Car[]>({
     queryKey: [getCarsQueryKey, onlyHighlighted, brandId],
-    queryFn: () => getCarsRequest({ onlyHighlighted, brandId }),
-    initialData: initialData ? { data: initialData } : undefined,
+    queryFn: () => fetchCarsData({ onlyHighlighted, brandId }),
   });
 
   return { carsQuery };

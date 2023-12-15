@@ -6,14 +6,15 @@ import {
 } from "@tanstack/react-query";
 import {
   getCarsQueryKey,
-  getCarsRequest,
+  fetchCarsData,
 } from "./server/actions/car/useCarsQuery";
 
 export default async function Home() {
   const queryClient = new QueryClient();
+
   await queryClient.prefetchQuery({
     queryKey: [getCarsQueryKey],
-    queryFn: () => getCarsRequest(),
+    queryFn: () => fetchCarsData({ onlyHighlighted: true }),
   });
 
   return (

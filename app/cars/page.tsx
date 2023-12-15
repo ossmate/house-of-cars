@@ -1,8 +1,8 @@
 import { getBrands } from "../server/actions/getBrands";
 import { CarsTiles } from "@/components/CarsTiles";
 import {
+  fetchCarsData,
   getCarsQueryKey,
-  getCarsRequest,
 } from "../server/actions/car/useCarsQuery";
 import {
   HydrationBoundary,
@@ -16,7 +16,7 @@ export default async function Cars() {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: [getCarsQueryKey],
-    queryFn: () => getCarsRequest(),
+    queryFn: () => fetchCarsData({}),
   });
 
   return (
