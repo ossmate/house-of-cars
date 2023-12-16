@@ -58,6 +58,8 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
     handleSubmit,
     formState: { errors, isDirty },
     control,
+    setValue,
+    watch,
   } = useForm<CreateCarTypeSchema>({
     resolver: zodResolver(createCarSchema),
     defaultValues: {
@@ -142,18 +144,21 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
           <p className="text-sm text-red-400">{errors?.price?.message}</p>
         )}
 
-        <label htmlFor="isHighlighted">Should highlight offer?</label>
-        <select
-          id="isHighlighted"
-          disabled={createCarMutation.isPending}
-          className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          {...register("isHighlighted", {
-            required: false,
-          })}
+        <label
+          htmlFor="isHighlighted"
+          className="inline-flex items-center cursor-pointer"
         >
-          <option value="true">True</option>
-          <option value="false">False</option>
-        </select>
+          <input
+            type="checkbox"
+            id="isHighlighted"
+            className="form-checkbox text-green-500 h-5 w-5 rounded border-gray-300 focus:ring-green-500 focus:border-green-500"
+            {...register("isHighlighted")}
+          />
+          <span className="ml-2 text-gray-700">Should highlight offer?</span>
+        </label>
+        {errors.isHighlighted && (
+          <p className="text-sm text-red-500">{errors.isHighlighted.message}</p>
+        )}
 
         <Controller
           control={control}
