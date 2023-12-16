@@ -10,6 +10,7 @@ export const createCarSchema = z.object({
   engine: z.string().min(1, "Engine name is required"),
   price: z.coerce.number().min(1, "Price name is required"),
   isHighlighted: z.boolean().default(false),
+  imageUrl: z.string().url().optional(),
 });
 
 type CreateCarTypeSchema = z.infer<typeof createCarSchema>;

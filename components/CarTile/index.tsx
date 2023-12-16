@@ -18,6 +18,7 @@ type Props = {
   isHighlighted: boolean;
   price: number;
   brand: Brand;
+  imageUrl: string;
 };
 
 export const CarTile = ({
@@ -28,6 +29,7 @@ export const CarTile = ({
   engine,
   isHighlighted,
   price,
+  imageUrl,
 }: Props) => {
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
@@ -85,7 +87,13 @@ export const CarTile = ({
             ]}
           />
         </div>
-        <Image width="300" height="300" alt="m3" src="/cars/m3/main.png" />
+        <Image
+          width="300"
+          height="300"
+          alt="m3"
+          className="w-[250px] h-[150px]"
+          src={imageUrl ? imageUrl : "/cars/m3/main.png"}
+        />
       </div>
       <div
         className={cn(

@@ -1,13 +1,14 @@
 "use client";
 
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
 import { Brand } from "@/app/settings/page";
 import { Button } from "@/components/ui/button";
 import { useCreateCarMutation } from "@/app/server/actions/car/useCreateCarMutation";
+import { uploadImageToCloudinary } from "@/lib/utils";
 
 const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),
@@ -16,6 +17,9 @@ const createCarSchema = z.object({
   engine: z.string().min(1, "Engine name is required"),
   price: z.coerce.number().min(1, "Price name is required"),
   isHighlighted: z.boolean().default(false),
+  image: z.custom<File>((v) => v instanceof File, {
+    message: "Image is required",
+  }),
 });
 
 type CreateCarTypeSchema = z.infer<typeof createCarSchema>;
@@ -25,7 +29,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
 
   const { createCarMutation } = useCreateCarMutation();
 
-  const handleCreateNewCar = (formData: CreateCarTypeSchema) => {
+  const handleCreateNewCar = async (formData: CreateCarTypeSchema) => {
     const result = createCarSchema.safeParse(formData);
 
     if (!result.success) {
@@ -34,17 +38,26 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
       );
     }
 
-    createCarMutation.mutate(formData, {
-      onSuccess: (data) => {
-        push(`/cars/${data?.data?.id}?singleCarView=true`);
+    let imageUrl = "";
+    if (formData.image) {
+      imageUrl = await uploadImageToCloudinary(formData.image);
+    }
+
+    createCarMutation.mutate(
+      { ...formData, imageUrl },
+      {
+        onSuccess: (data) => {
+          push(`/cars/${data?.data?.id}?singleCarView=true`);
+        },
       },
-    });
+    );
   };
 
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
+    control,
   } = useForm<CreateCarTypeSchema>({
     resolver: zodResolver(createCarSchema),
     defaultValues: {
@@ -54,6 +67,7 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
       engine: "",
       price: 0,
       isHighlighted: false,
+      image: undefined,
     },
   });
 
@@ -140,6 +154,25 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
           <option value="true">True</option>
           <option value="false">False</option>
         </select>
+
+        <Controller
+          control={control}
+          name="image"
+          render={({ field }) => (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files) {
+                  field.onChange(e.target.files[0]);
+                }
+              }}
+            />
+          )}
+        />
+        {errors?.image?.message && (
+          <p className="text-sm text-red-400">{errors?.image?.message}</p>
+        )}
 
         <Button
           type="submit"

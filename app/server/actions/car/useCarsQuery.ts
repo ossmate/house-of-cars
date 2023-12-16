@@ -12,6 +12,7 @@ export type Car = {
   engine: string;
   isHighlighted: boolean;
   price: number;
+  imageUrl: string;
   brand: Brand;
 };
 
