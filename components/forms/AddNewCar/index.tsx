@@ -38,13 +38,19 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
       );
     }
 
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      throw new Error(`Missing userId`);
+    }
+
     let imageUrl = "";
     if (formData.image) {
       imageUrl = await uploadImageToCloudinary(formData.image);
     }
 
     createCarMutation.mutate(
-      { ...formData, imageUrl },
+      { ...formData, imageUrl, belongsToId: userId },
       {
         onSuccess: (data) => {
           push(`/cars/${data?.data?.id}?singleCarView=true`);
@@ -58,8 +64,6 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
     handleSubmit,
     formState: { errors, isDirty },
     control,
-    setValue,
-    watch,
   } = useForm<CreateCarTypeSchema>({
     resolver: zodResolver(createCarSchema),
     defaultValues: {

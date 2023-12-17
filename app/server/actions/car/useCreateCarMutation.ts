@@ -8,6 +8,7 @@ export const createCarSchema = z.object({
   model: z.string().min(1, "Model name is required"),
   generation: z.string().min(1, "Generation name is required"),
   engine: z.string().min(1, "Engine name is required"),
+  belongsToId: z.string().min(1, "BelongsToId is required"),
   price: z.coerce.number().min(1, "Price name is required"),
   isHighlighted: z.boolean().default(false),
   imageUrl: z.string().url().optional(),
@@ -26,9 +27,15 @@ export const useCreateCarMutation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ ...formData }),
-    }).then((res) => res.json());
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    });
 
   const createCarMutation = useMutation({
     mutationFn: (formData: CreateCarTypeSchema) => createCarRequest(formData),
