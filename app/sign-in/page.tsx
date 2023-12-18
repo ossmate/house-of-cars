@@ -33,6 +33,7 @@ export default function SignIn() {
       password: "",
     },
   });
+
   return (
     <main className="flex justify-start min-h-screen flex-col items-center  p-24">
       <p>sign in to app</p>
@@ -69,6 +70,12 @@ export default function SignIn() {
         >
           Submit
         </Button>
+
+        {signInMutation.error?.message && (
+          <p className="text-sm text-red-400">
+            {signInMutation.error?.message}
+          </p>
+        )}
       </form>
     </main>
   );
