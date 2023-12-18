@@ -13,13 +13,6 @@ export const ReactQueryProvider = ({ children }: { children: ReactNode }) => {
 
   const dehydratedState = dehydrate(queryClient);
 
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-    };
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
