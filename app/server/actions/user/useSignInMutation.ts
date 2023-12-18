@@ -41,8 +41,8 @@ export const useSignInMutation = () => {
   const signInMutation = useMutation({
     mutationFn: (formData: SignInTypeSchema) => signInRequest(formData),
     onSuccess: ({ data }) => {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("token", data?.token);
+      localStorage.setItem("userId", data?.userId);
     },
     onError: (error) => {
       console.error("Error during sign in:", error);
