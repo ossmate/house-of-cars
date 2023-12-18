@@ -1,7 +1,7 @@
 import { createAPIPath } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
-type Brand = {
+export type Brand = {
   id: string;
   name: string;
   imageUrl: string;

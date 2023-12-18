@@ -5,10 +5,10 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-import { Brand } from "@/app/settings/page";
 import { Button } from "@/components/ui/button";
 import { useCreateCarMutation } from "@/app/server/actions/car/useCreateCarMutation";
 import { uploadImageToCloudinary } from "@/lib/utils";
+import { Brand, useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
 
 const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),
@@ -24,8 +24,12 @@ const createCarSchema = z.object({
 
 type CreateCarTypeSchema = z.infer<typeof createCarSchema>;
 
-export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
+export const AddNewCar = () => {
   const { push } = useRouter();
+
+  const {
+    brandsQuery: { data: brands },
+  } = useBrandsQuery();
 
   const { createCarMutation } = useCreateCarMutation();
 
@@ -86,11 +90,12 @@ export const AddNewCar = ({ brands }: { brands: Brand[] }) => {
         <label htmlFor="brandId">Brand</label>
         <select
           id="brandId"
+          placeholder="Select brand"
           disabled={createCarMutation.isPending}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("brandId")}
         >
-          {brands.map(({ id, name }) => (
+          {brands?.data.map(({ id, name }) => (
             <option key={id} value={id}>
               {name}
             </option>
