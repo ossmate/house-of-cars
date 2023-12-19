@@ -13,7 +13,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export const Navigation = () => {
-  const { jwtToken } = useAuthProvider();
+  const {
+    authState: { jwtToken },
+  } = useAuthProvider();
   const pathname = usePathname();
 
   const menuItems = [

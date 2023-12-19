@@ -1,10 +1,29 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useMemo } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-type Context = {
-  userId?: string;
-  jwtToken?: string;
+type AuthState = {
+  userId?: string | null;
+  jwtToken?: string | null;
+};
+
+type AuthContextType = {
+  authState: AuthState;
+  setAuthState: Dispatch<
+    SetStateAction<{
+      userId?: string | null | undefined;
+      jwtToken?: string | null | undefined;
+    }>
+  >;
 };
 
 type ProviderProps = {
@@ -14,15 +33,24 @@ type ProviderProps = {
 const AuthContext = createContext({});
 
 const AuthProvider = ({ children }: ProviderProps) => {
-  const userId = localStorage.getItem("userId");
-  const jwtToken = localStorage.getItem("token");
+  const [authState, setAuthState] = useState<AuthState>({
+    userId: null,
+    jwtToken: null,
+  });
+
+  useEffect(() => {
+    // Hydrate auth state from localStorage on client-side
+    const userId = localStorage.getItem("userId");
+    const jwtToken = localStorage.getItem("token");
+    setAuthState({ userId, jwtToken });
+  }, []);
 
   const value = useMemo(
     () => ({
-      userId,
-      jwtToken,
+      authState,
+      setAuthState,
     }),
-    [userId, jwtToken],
+    [authState, setAuthState],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -35,7 +63,7 @@ const useAuthProvider = () => {
     throw new Error("useAuthProvider must be used within a AuthProvider");
   }
 
-  return context as Context;
+  return context as AuthContextType;
 };
 
 export { AuthProvider, useAuthProvider };

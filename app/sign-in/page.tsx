@@ -8,9 +8,11 @@ import {
 } from "../server/actions/user/useSignInMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const { signInMutation } = useSignInMutation();
+  const { push } = useRouter();
 
   const handleSignIn = async (formData: SignInTypeSchema) => {
     const result = signInSchema.safeParse(formData);
@@ -19,7 +21,11 @@ export default function SignIn() {
       throw new Error(`An error occurred while parsing the sign in form data.`);
     }
 
-    signInMutation.mutate(formData);
+    signInMutation.mutate(formData, {
+      onSuccess: () => {
+        push("/");
+      },
+    });
   };
 
   const {

@@ -42,7 +42,7 @@ export const AddNewCar = () => {
       );
     }
 
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
 
     if (!userId) {
       throw new Error(`Missing userId`);

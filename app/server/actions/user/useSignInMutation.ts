@@ -1,4 +1,4 @@
-import { createAPIPath } from "@/lib/utils";
+import { useAuthProvider } from "@/app/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 
@@ -10,6 +10,8 @@ export const signInSchema = z.object({
 export type SignInTypeSchema = z.infer<typeof signInSchema>;
 
 export const useSignInMutation = () => {
+  const { setAuthState } = useAuthProvider();
+
   const signInRequest = async (
     formData: SignInTypeSchema,
   ): Promise<{ data: { token: string; userId: string } }> => {
@@ -41,8 +43,9 @@ export const useSignInMutation = () => {
   const signInMutation = useMutation({
     mutationFn: (formData: SignInTypeSchema) => signInRequest(formData),
     onSuccess: ({ data }) => {
-      sessionStorage.setItem("token", data?.token);
-      sessionStorage.setItem("userId", data?.userId);
+      localStorage.setItem("token", data?.token);
+      localStorage.setItem("userId", data?.userId);
+      setAuthState({ userId: data?.userId, jwtToken: data?.token });
     },
     onError: (error) => {
       console.error("Error during sign in:", error);
