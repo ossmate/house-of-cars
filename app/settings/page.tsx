@@ -4,18 +4,14 @@ import { BrandsTable } from "@/components/BrandsTable";
 import { AddNewBrand } from "@/components/forms/AddNewBrand";
 import { AddNewCar } from "@/components/forms/AddNewCar";
 import { useAuthProvider } from "../AuthProvider";
-import { useRouter } from "next/navigation";
 
 export default function Settings() {
-  const { push } = useRouter();
   const {
     authState: { jwtToken },
   } = useAuthProvider();
 
   if (!jwtToken) {
-    push("/");
-
-    return null;
+    return <div>Unauthorized</div>;
   }
 
   return (
