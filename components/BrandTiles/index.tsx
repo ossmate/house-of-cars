@@ -4,9 +4,7 @@ import type { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-import { Skeleton } from "../ui/skeleton";
-import { useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
-import { Brand } from "@/app/settings/page";
+import { Brand, useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
 import { BrandTilesSkeleton } from "./BrandTilesSekeleton";
 
 type Props = {
@@ -38,7 +36,14 @@ export const BrandTiles = ({
                   "mb-5 p-4 mx-2 bg-blue-400 flex justify-center flex-col items-center hover:bg-pink-100 transition-colors cursor-pointer",
                   activeBrand === id && "bg-pink-200",
                 )}
-                onClick={() => setActiveBrand(id)}
+                onClick={() => {
+                  if (activeBrand === id) {
+                    setActiveBrand(null);
+                    return;
+                  }
+
+                  setActiveBrand(id);
+                }}
               >
                 <span>{name}</span>
                 <div>
