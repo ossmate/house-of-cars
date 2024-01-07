@@ -5,8 +5,8 @@ import { CarTile } from "../CarTile";
 import { CarTileSkeleton } from "../CarTile/CarTileSkeleton";
 
 import { useState } from "react";
-import { Brand } from "@/app/settings/page";
 import { BrandTiles } from "../BrandTiles";
+import { Brand } from "@/app/api/brand/useBrandsQuery";
 
 type Props = {
   cars?: Car[];

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { DropdownMenu } from "../DropdownMenu";
 import { useRemoveCarMutation } from "@/app/server/actions/car/useRemoveCarMutation";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Brand } from "@/app/settings/page";
+import { Brand } from "@/app/api/brand/useBrandsQuery";
 
 type Props = {
   id: string;

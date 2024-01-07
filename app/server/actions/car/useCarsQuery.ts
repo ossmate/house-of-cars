@@ -1,7 +1,7 @@
 import qs from "qs";
-import { Brand } from "@/app/settings/page";
 import { useQuery } from "@tanstack/react-query";
 import { createAPIPath } from "@/lib/utils";
+import { Brand } from "@/app/api/brand/useBrandsQuery";
 
 export type Car = {
   id: string;
