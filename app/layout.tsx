@@ -18,15 +18,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ReactQueryProvider>
-      <AuthProvider>
-        <html lang="en">
-          <body className={inter.className}>
-            <Navigation />
-            {children}
-          </body>
-        </html>
-      </AuthProvider>
-    </ReactQueryProvider>
+    <AuthProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Navigation />
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </body>
+      </html>
+    </AuthProvider>
   );
 }
