@@ -40,17 +40,20 @@ export const fetchCarsData = async ({
 };
 
 type QueryParams = {
+  initialData?: Car[];
   onlyHighlighted?: boolean;
   brandId?: string | null;
 };
 
 export const useCarsQuery = ({
+  initialData,
   onlyHighlighted = undefined,
   brandId = null,
 }: QueryParams & { initialData?: Car[] }) => {
   const carsQuery = useQuery<Car[]>({
     queryKey: [getCarsQueryKey, onlyHighlighted, brandId],
     queryFn: () => fetchCarsData({ onlyHighlighted, brandId }),
+    initialData,
   });
 
   return { carsQuery };
