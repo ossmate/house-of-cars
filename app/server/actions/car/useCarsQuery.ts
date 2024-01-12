@@ -14,6 +14,7 @@ export type Car = {
   price: number;
   imageUrl: string;
   brand: Brand;
+  isFavorite?: boolean;
 };
 
 export const getCarsQueryKey = "cars";
@@ -29,7 +30,19 @@ export const fetchCarsData = async ({
     const queryParams = { onlyHighlighted, brandId };
     const queryString = qs.stringify(queryParams, { skipNulls: true });
 
-    const response = await fetch(`${createAPIPath()}/api/cars?${queryString}`);
+    const headers: Record<string, string> = {};
+
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
+    const response = await fetch(`${createAPIPath()}/api/cars?${queryString}`, {
+      headers: headers,
+    });
+
     const { data } = await response.json();
 
     return data;
