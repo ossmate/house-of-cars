@@ -9,13 +9,14 @@ import { BrandTiles } from "../BrandTiles";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 
 type Props = {
-  cars?: Car[];
+  initialData?: Car[];
   onlyHighlighted?: boolean;
   shouldDisplayBrandSelector?: boolean;
   brands?: Brand[];
 };
 
 export const CarsTiles = ({
+  initialData = [],
   onlyHighlighted = undefined,
   shouldDisplayBrandSelector = false,
   brands,
@@ -27,6 +28,7 @@ export const CarsTiles = ({
   } = useCarsQuery({
     ...(onlyHighlighted !== undefined && { onlyHighlighted: onlyHighlighted }),
     brandId: shouldDisplayBrandSelector ? activeBrand : null,
+    initialData,
   });
 
   if (isError) return <div>Error!</div>;

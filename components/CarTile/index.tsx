@@ -7,6 +7,7 @@ import { DropdownMenu } from "../DropdownMenu";
 import { useRemoveCarMutation } from "@/app/server/actions/car/useRemoveCarMutation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
+import { useAuthProvider } from "@/app/AuthProvider";
 
 type Props = {
   id: string;
@@ -31,6 +32,10 @@ export const CarTile = ({
   price,
   imageUrl,
 }: Props) => {
+  const {
+    authState: { jwtToken },
+  } = useAuthProvider();
+
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
@@ -77,15 +82,17 @@ export const CarTile = ({
             </span>
           </div>
 
-          <DropdownMenu
-            actions={[
-              {
-                id: "1",
-                label: "Remove",
-                onClick: () => onRemoveCarClick(id),
-              },
-            ]}
-          />
+          {jwtToken && (
+            <DropdownMenu
+              actions={[
+                {
+                  id: "1",
+                  label: "Remove",
+                  onClick: () => onRemoveCarClick(id),
+                },
+              ]}
+            />
+          )}
         </div>
         <Image
           width="300"
