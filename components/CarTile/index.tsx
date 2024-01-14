@@ -1,5 +1,7 @@
 "use client";
 
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +10,8 @@ import { useRemoveCarMutation } from "@/app/server/actions/car/useRemoveCarMutat
 import { useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
+import { Button } from "../ui/button";
+import { useAddToFavoriteMutation } from "@/app/server/actions/car/useAddToFavoriteMutation";
 
 type Props = {
   id: string;
@@ -20,6 +24,7 @@ type Props = {
   price: number;
   brand: Brand;
   imageUrl: string;
+  isFavorite?: boolean;
 };
 
 export const CarTile = ({
@@ -31,7 +36,9 @@ export const CarTile = ({
   isHighlighted,
   price,
   imageUrl,
+  isFavorite,
 }: Props) => {
+  console.log(isFavorite, "isFavorite");
   const {
     authState: { jwtToken },
   } = useAuthProvider();
@@ -39,6 +46,7 @@ export const CarTile = ({
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
+  const { addToFavoriteMutation } = useAddToFavoriteMutation();
 
   const onRemoveCarClick = (carId: string) => {
     removeCarMutation.mutate(carId, {
@@ -104,12 +112,20 @@ export const CarTile = ({
       </div>
       <div
         className={cn(
-          "rounded-b-xl p-4 flex justify-end bg-gray-300",
+          "rounded-b-xl p-4 flex justify-between items-center bg-gray-300",
           isHighlighted && brand.name === "BMW" && "bg-green-300",
           isHighlighted && brand.name === "Mercedes" && "bg-blue-300",
           isHighlighted && brand.name === "Porsche" && "bg-pink-300",
         )}
       >
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            addToFavoriteMutation.mutate(id);
+          }}
+        >
+          {isFavorite ? <FaHeart /> : <FaRegHeart />}
+        </Button>
         <p>
           <b>${price}</b>/day
         </p>

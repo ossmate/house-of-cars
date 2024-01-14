@@ -58,6 +58,7 @@ export const CarsTiles = ({
               isHighlighted,
               price,
               imageUrl,
+              isFavorite,
             }) => (
               <CarTile
                 id={id}
@@ -70,6 +71,7 @@ export const CarsTiles = ({
                 isHighlighted={isHighlighted}
                 price={price}
                 imageUrl={imageUrl}
+                isFavorite={isFavorite}
               />
             ),
           )}

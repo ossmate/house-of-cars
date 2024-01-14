@@ -7,6 +7,9 @@ export const useRemoveCarMutation = () => {
   const removeCarRequest = (carId: string) =>
     fetch(`${createAPIPath()}/api/cars/${carId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     });
 
   const removeCarMutation = useMutation({
