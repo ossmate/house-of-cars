@@ -11,7 +11,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
 import { Button } from "../ui/button";
-import { useAddToFavoriteMutation } from "@/app/server/actions/car/useAddToFavoriteMutation";
+import { useAddCarToFavoriteMutation } from "@/app/server/actions/car/useAddCarToFavoriteMutation";
+import { useRemoveCarFromFavoriteMutation } from "@/app/server/actions/car/useRemoveCarFromFavoriteMutation";
 
 type Props = {
   id: string;
@@ -38,7 +39,6 @@ export const CarTile = ({
   imageUrl,
   isFavorite,
 }: Props) => {
-  console.log(isFavorite, "isFavorite");
   const {
     authState: { jwtToken },
   } = useAuthProvider();
@@ -46,7 +46,8 @@ export const CarTile = ({
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
-  const { addToFavoriteMutation } = useAddToFavoriteMutation();
+  const { addCarToFavoriteMutation } = useAddCarToFavoriteMutation();
+  const { deleteCarFromFavoriteMutation } = useRemoveCarFromFavoriteMutation();
 
   const onRemoveCarClick = (carId: string) => {
     removeCarMutation.mutate(carId, {
@@ -121,7 +122,9 @@ export const CarTile = ({
         <Button
           onClick={(e) => {
             e.preventDefault();
-            addToFavoriteMutation.mutate(id);
+            isFavorite
+              ? deleteCarFromFavoriteMutation.mutate(id)
+              : addCarToFavoriteMutation.mutate(id);
           }}
         >
           {isFavorite ? <FaHeart /> : <FaRegHeart />}

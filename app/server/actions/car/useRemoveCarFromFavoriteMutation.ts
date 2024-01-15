@@ -3,16 +3,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCarsQueryKey } from "./useCarsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
 
-export const useAddToFavoriteMutation = () => {
+export const useRemoveCarFromFavoriteMutation = () => {
   const {
     authState: { userId, jwtToken },
   } = useAuthProvider();
 
   const queryClient = useQueryClient();
 
-  const postAddToFavoriteRequest = (carId: string) =>
-    fetch(`${createAPIPath()}/api/favorites/${carId}`, {
-      method: "POST",
+  const deleteCarFromFavoriteRequest = (carId: string) =>
+    fetch(`${createAPIPath()}/api/favorites`, {
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
@@ -23,8 +23,8 @@ export const useAddToFavoriteMutation = () => {
       }),
     });
 
-  const addToFavoriteMutation = useMutation({
-    mutationFn: (carId: string) => postAddToFavoriteRequest(carId),
+  const deleteCarFromFavoriteMutation = useMutation({
+    mutationFn: (carId: string) => deleteCarFromFavoriteRequest(carId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [getCarsQueryKey],
@@ -32,5 +32,5 @@ export const useAddToFavoriteMutation = () => {
     },
   });
 
-  return { addToFavoriteMutation };
+  return { deleteCarFromFavoriteMutation };
 };
