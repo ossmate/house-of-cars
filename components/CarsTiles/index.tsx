@@ -8,6 +8,7 @@ import { useState } from "react";
 import { BrandTiles } from "../BrandTiles";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
+import { useCarData } from "./useCarData";
 
 type Props = {
   initialData?: Car[];
@@ -26,26 +27,14 @@ export const CarsTiles = ({
 }: Props) => {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
 
-  const {
-    carsQuery: { data, isLoading, isError },
-  } = useCarsQuery({
-    ...(onlyHighlighted !== undefined && { onlyHighlighted: onlyHighlighted }),
-    brandId: shouldDisplayBrandSelector ? activeBrand : null,
+  const { cars, isLoading, isError } = useCarData({
+    onlyHighlighted,
+    activeBrand: shouldDisplayBrandSelector ? activeBrand : null,
     initialData,
-    isEnabled: isFavoritesList,
+    isFavoritesList,
   });
 
-  const {
-    favoriteCarsQuery: {
-      data: favoriteCars,
-      isLoading: favoriteCarsIsLoading,
-      isError: favoriteCarsIsError,
-    },
-  } = useFavoriteCarsQuery();
-
-  const cars = isFavoritesList ? favoriteCars : data;
-
-  if (isError || favoriteCarsIsError) return <div>Error!</div>;
+  if (isError) return <div>Error!</div>;
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -57,7 +46,7 @@ export const CarsTiles = ({
         />
       )}
 
-      {isLoading || favoriteCarsIsLoading ? (
+      {isLoading ? (
         <CarTileSkeleton />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
