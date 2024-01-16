@@ -1,5 +1,6 @@
 "use client";
 
+import { CarsTiles } from "@/components/CarsTiles";
 import { useAuthProvider } from "../AuthProvider";
 
 export default function Favorite() {
@@ -14,6 +15,7 @@ export default function Favorite() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       favorite
+      <CarsTiles shouldDisplayBrandSelector={false} isFavoritesList={true} />
     </main>
   );
 }
