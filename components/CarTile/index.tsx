@@ -26,6 +26,7 @@ type Props = {
   brand: Brand;
   imageUrl: string;
   isFavorite?: boolean;
+  isFavoritesList?: boolean;
 };
 
 export const CarTile = ({
@@ -38,6 +39,7 @@ export const CarTile = ({
   price,
   imageUrl,
   isFavorite,
+  isFavoritesList,
 }: Props) => {
   const {
     authState: { jwtToken },
@@ -47,7 +49,8 @@ export const CarTile = ({
   const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
   const { addCarToFavoriteMutation } = useAddCarToFavoriteMutation();
-  const { deleteCarFromFavoriteMutation } = useRemoveCarFromFavoriteMutation();
+  const { deleteCarFromFavoriteMutation } =
+    useRemoveCarFromFavoriteMutation(isFavoritesList);
 
   const onRemoveCarClick = (carId: string) => {
     removeCarMutation.mutate(carId, {

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createAPIPath } from "@/lib/utils";
 import { Car } from "./useCarsQuery";
 
-export const getCarsQueryKey = "favorite-cars";
+export const getFavoriteCarsQueryKey = "favorite-cars";
 
 export const fetchFavoriteCars = async () => {
   try {
@@ -32,7 +32,7 @@ export const fetchFavoriteCars = async () => {
 
 export const useFavoriteCarsQuery = () => {
   const favoriteCarsQuery = useQuery<Car[]>({
-    queryKey: [getCarsQueryKey],
+    queryKey: [getFavoriteCarsQueryKey],
     queryFn: () => fetchFavoriteCars(),
   });
 

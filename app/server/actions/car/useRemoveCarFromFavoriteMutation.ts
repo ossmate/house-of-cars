@@ -2,8 +2,9 @@ import { createAPIPath } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCarsQueryKey } from "./useCarsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
+import { getFavoriteCarsQueryKey } from "./useFavoriteCarsQuery";
 
-export const useRemoveCarFromFavoriteMutation = () => {
+export const useRemoveCarFromFavoriteMutation = (isFavoritesList?: boolean) => {
   const {
     authState: { userId, jwtToken },
   } = useAuthProvider();
@@ -48,6 +49,14 @@ export const useRemoveCarFromFavoriteMutation = () => {
     //   return { previousCars };
     // },
     onSuccess: () => {
+      if (isFavoritesList) {
+        queryClient.invalidateQueries({
+          queryKey: [getFavoriteCarsQueryKey],
+        });
+
+        return;
+      }
+
       queryClient.invalidateQueries({
         queryKey: [getCarsQueryKey],
       });

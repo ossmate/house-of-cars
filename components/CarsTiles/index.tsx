@@ -75,6 +75,7 @@ export const CarsTiles = ({
                 price={price}
                 imageUrl={imageUrl}
                 isFavorite={isFavorite}
+                isFavoritesList={isFavoritesList}
               />
             ),
           )}
