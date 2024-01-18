@@ -102,6 +102,11 @@ export const CarTile = ({
                   label: "Remove",
                   onClick: () => onRemoveCarClick(id),
                 },
+                {
+                  id: "2",
+                  label: "Remove from favorites",
+                  onClick: () => deleteCarFromFavoriteMutation.mutate(id),
+                },
               ]}
             />
           )}
