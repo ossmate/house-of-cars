@@ -62,6 +62,26 @@ export const CarTile = ({
     });
   };
 
+  const getActionButtonOptions = () => {
+    const actions = [
+      {
+        id: "1",
+        label: "Remove",
+        onClick: () => onRemoveCarClick(id),
+      },
+    ];
+
+    if (isFavorite) {
+      actions.push({
+        id: "2",
+        label: "Remove from favorites",
+        onClick: () => deleteCarFromFavoriteMutation.mutate(id),
+      });
+    }
+
+    return actions;
+  };
+
   return (
     <Link
       className="md:min-w-full min-w-[350px]"
@@ -94,22 +114,7 @@ export const CarTile = ({
             </span>
           </div>
 
-          {jwtToken && (
-            <DropdownMenu
-              actions={[
-                {
-                  id: "1",
-                  label: "Remove",
-                  onClick: () => onRemoveCarClick(id),
-                },
-                {
-                  id: "2",
-                  label: "Remove from favorites",
-                  onClick: () => deleteCarFromFavoriteMutation.mutate(id),
-                },
-              ]}
-            />
-          )}
+          {jwtToken && <DropdownMenu actions={getActionButtonOptions()} />}
         </div>
         <Image
           width="300"
