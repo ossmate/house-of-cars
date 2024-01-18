@@ -25,27 +25,6 @@ export const useAddCarToFavoriteMutation = () => {
 
   const addCarToFavoriteMutation = useMutation({
     mutationFn: (carId: string) => postAddCarToFavoriteRequest(carId),
-    onMutate: async (carId) => {
-      await queryClient.cancelQueries("cars");
-
-      const previousCars = queryClient.getQueryData("cars");
-      console.log(previousCars, "previousCars");
-
-      // Check if previousCars exists
-      if (previousCars) {
-        // Optimistically update the UI
-        queryClient.setQueryData("cars", (oldCars: CarType[] | undefined) => {
-          return oldCars?.map((car) => {
-            if (car.id === carId) {
-              return { ...car, isFavorite: true };
-            }
-            return car;
-          });
-        });
-      }
-
-      return { previousCars };
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [getCarsQueryKey],

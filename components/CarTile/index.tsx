@@ -139,6 +139,10 @@ export const CarTile = ({
               ? deleteCarFromFavoriteMutation.mutate(id)
               : addCarToFavoriteMutation.mutate(id);
           }}
+          disabled={
+            deleteCarFromFavoriteMutation.isPending ||
+            addCarToFavoriteMutation.isPending
+          }
         >
           {isFavorite ? <FaHeart /> : <FaRegHeart />}
         </Button>
