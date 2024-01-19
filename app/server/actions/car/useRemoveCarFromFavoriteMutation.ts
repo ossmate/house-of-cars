@@ -1,6 +1,6 @@
 import { createAPIPath } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCarsQueryKey } from "./useCarsQuery";
+import { Car, getCarsQueryKey } from "./useCarsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
 import { getFavoriteCarsQueryKey } from "./useFavoriteCarsQuery";
 
@@ -26,18 +26,45 @@ export const useRemoveCarFromFavoriteMutation = (isFavoritesList?: boolean) => {
 
   const deleteCarFromFavoriteMutation = useMutation({
     mutationFn: (carId: string) => deleteCarFromFavoriteRequest(carId),
+    onMutate: (carId) => {
+      const data = isFavoritesList
+        ? queryClient.getQueryData([getFavoriteCarsQueryKey])
+        : queryClient.getQueryData([getCarsQueryKey]);
+
+      queryClient.setQueryData(
+        isFavoritesList ? [getFavoriteCarsQueryKey] : [getCarsQueryKey],
+        (prevData: Car[]) => {
+          if (isFavoritesList) {
+            const updatedData = prevData.map((car: Car) =>
+              car.id === carId ? { ...car, isFavorite: false } : car,
+            );
+            return updatedData;
+          }
+
+          return prevData;
+        },
+      );
+
+      return { data };
+    },
     onSuccess: () => {
-      if (isFavoritesList) {
+      if (!isFavoritesList) {
+        queryClient.invalidateQueries({
+          queryKey: [getCarsQueryKey],
+        });
+      } else {
         queryClient.invalidateQueries({
           queryKey: [getFavoriteCarsQueryKey],
         });
-
-        return;
       }
-
-      queryClient.invalidateQueries({
-        queryKey: [getCarsQueryKey],
-      });
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.data) {
+        queryClient.setQueryData(
+          isFavoritesList ? [getFavoriteCarsQueryKey] : [getCarsQueryKey],
+          context.data,
+        );
+      }
     },
   });
 
