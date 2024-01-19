@@ -7,12 +7,15 @@ import { CarTileSkeleton } from "../CarTile/CarTileSkeleton";
 import { useState } from "react";
 import { BrandTiles } from "../BrandTiles";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
+import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
+import { useCarData } from "./useCarData";
 
 type Props = {
   initialData?: Car[];
   onlyHighlighted?: boolean;
   shouldDisplayBrandSelector?: boolean;
   brands?: Brand[];
+  isFavoritesList?: boolean;
 };
 
 export const CarsTiles = ({
@@ -20,15 +23,15 @@ export const CarsTiles = ({
   onlyHighlighted = undefined,
   shouldDisplayBrandSelector = false,
   brands,
+  isFavoritesList = false,
 }: Props) => {
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
 
-  const {
-    carsQuery: { data, isLoading, isError },
-  } = useCarsQuery({
-    ...(onlyHighlighted !== undefined && { onlyHighlighted: onlyHighlighted }),
-    brandId: shouldDisplayBrandSelector ? activeBrand : null,
+  const { cars, isLoading, isError } = useCarData({
+    onlyHighlighted,
+    activeBrand: shouldDisplayBrandSelector ? activeBrand : null,
     initialData,
+    isFavoritesList,
   });
 
   if (isError) return <div>Error!</div>;
@@ -47,7 +50,7 @@ export const CarsTiles = ({
         <CarTileSkeleton />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
-          {data?.map(
+          {cars?.map(
             ({
               id,
               brand,
@@ -58,6 +61,7 @@ export const CarsTiles = ({
               isHighlighted,
               price,
               imageUrl,
+              isFavorite,
             }) => (
               <CarTile
                 id={id}
@@ -70,9 +74,19 @@ export const CarsTiles = ({
                 isHighlighted={isHighlighted}
                 price={price}
                 imageUrl={imageUrl}
+                isFavorite={isFavorite}
+                isFavoritesList={isFavoritesList}
               />
             ),
           )}
+        </div>
+      )}
+
+      {cars?.length === 0 && (
+        <div className="flex">
+          {isFavoritesList
+            ? "Your favorites cars list is empty"
+            : "Cars list is empty"}
         </div>
       )}
     </main>

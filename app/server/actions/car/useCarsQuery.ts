@@ -56,17 +56,22 @@ type QueryParams = {
   initialData?: Car[];
   onlyHighlighted?: boolean;
   brandId?: string | null;
+  isEnabled?: boolean;
 };
 
 export const useCarsQuery = ({
   initialData,
   onlyHighlighted = undefined,
-  brandId = null,
+  brandId = undefined,
+  isEnabled = true,
 }: QueryParams & { initialData?: Car[] }) => {
+  const queryKey = [getCarsQueryKey, onlyHighlighted, brandId].filter(Boolean);
+
   const carsQuery = useQuery<Car[]>({
-    queryKey: [getCarsQueryKey, onlyHighlighted, brandId],
+    queryKey,
     queryFn: () => fetchCarsData({ onlyHighlighted, brandId }),
     initialData,
+    enabled: isEnabled,
   });
 
   return { carsQuery };

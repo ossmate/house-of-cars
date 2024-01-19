@@ -1,5 +1,7 @@
 "use client";
 
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +10,9 @@ import { useRemoveCarMutation } from "@/app/server/actions/car/useRemoveCarMutat
 import { useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { useAuthProvider } from "@/app/AuthProvider";
+import { Button } from "../ui/button";
+import { useAddCarToFavoriteMutation } from "@/app/server/actions/car/useAddCarToFavoriteMutation";
+import { useRemoveCarFromFavoriteMutation } from "@/app/server/actions/car/useRemoveCarFromFavoriteMutation";
 
 type Props = {
   id: string;
@@ -20,6 +25,8 @@ type Props = {
   price: number;
   brand: Brand;
   imageUrl: string;
+  isFavorite?: boolean;
+  isFavoritesList?: boolean;
 };
 
 export const CarTile = ({
@@ -31,6 +38,8 @@ export const CarTile = ({
   isHighlighted,
   price,
   imageUrl,
+  isFavorite,
+  isFavoritesList,
 }: Props) => {
   const {
     authState: { jwtToken },
@@ -39,6 +48,9 @@ export const CarTile = ({
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
   const { removeCarMutation } = useRemoveCarMutation();
+  const { addCarToFavoriteMutation } = useAddCarToFavoriteMutation();
+  const { deleteCarFromFavoriteMutation } =
+    useRemoveCarFromFavoriteMutation(isFavoritesList);
 
   const onRemoveCarClick = (carId: string) => {
     removeCarMutation.mutate(carId, {
@@ -48,6 +60,26 @@ export const CarTile = ({
         }
       },
     });
+  };
+
+  const getActionButtonOptions = () => {
+    const actions = [
+      {
+        id: "1",
+        label: "Remove",
+        onClick: () => onRemoveCarClick(id),
+      },
+    ];
+
+    if (isFavorite) {
+      actions.push({
+        id: "2",
+        label: "Remove from favorites",
+        onClick: () => deleteCarFromFavoriteMutation.mutate(id),
+      });
+    }
+
+    return actions;
   };
 
   return (
@@ -82,17 +114,7 @@ export const CarTile = ({
             </span>
           </div>
 
-          {jwtToken && (
-            <DropdownMenu
-              actions={[
-                {
-                  id: "1",
-                  label: "Remove",
-                  onClick: () => onRemoveCarClick(id),
-                },
-              ]}
-            />
-          )}
+          {jwtToken && <DropdownMenu actions={getActionButtonOptions()} />}
         </div>
         <Image
           width="300"
@@ -104,12 +126,26 @@ export const CarTile = ({
       </div>
       <div
         className={cn(
-          "rounded-b-xl p-4 flex justify-end bg-gray-300",
+          "rounded-b-xl p-4 flex justify-between items-center bg-gray-300",
           isHighlighted && brand.name === "BMW" && "bg-green-300",
           isHighlighted && brand.name === "Mercedes" && "bg-blue-300",
           isHighlighted && brand.name === "Porsche" && "bg-pink-300",
         )}
       >
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            isFavorite
+              ? deleteCarFromFavoriteMutation.mutate(id)
+              : addCarToFavoriteMutation.mutate(id);
+          }}
+          disabled={
+            deleteCarFromFavoriteMutation.isPending ||
+            addCarToFavoriteMutation.isPending
+          }
+        >
+          {isFavorite ? <FaHeart /> : <FaRegHeart />}
+        </Button>
         <p>
           <b>${price}</b>/day
         </p>
