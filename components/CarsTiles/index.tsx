@@ -81,6 +81,14 @@ export const CarsTiles = ({
           )}
         </div>
       )}
+
+      {cars?.length === 0 && (
+        <div className="flex">
+          {isFavoritesList
+            ? "Your favorites cars list is empty"
+            : "Cars list is empty"}
+        </div>
+      )}
     </main>
   );
 };
