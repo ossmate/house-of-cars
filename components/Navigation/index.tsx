@@ -24,6 +24,7 @@ export const Navigation = () => {
     { id: 3, label: "Favorites", href: "/favorite", enabled: jwtToken },
     { id: 4, label: "Settings", href: "/settings", enabled: jwtToken },
     { id: 5, label: "Sign In", href: "/sign-in", enabled: !jwtToken },
+    { id: 6, label: "Sign Out", href: "/sign-out", enabled: jwtToken },
   ];
 
   return (

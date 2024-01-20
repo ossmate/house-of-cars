@@ -24,19 +24,22 @@ type AuthContextType = {
       jwtToken?: string | null | undefined;
     }>
   >;
+  memoizedRemoveAuthState: () => void;
 };
 
 type ProviderProps = {
   children: ReactNode;
 };
 
+const defaultAuthState = {
+  userId: null,
+  jwtToken: null,
+};
+
 const AuthContext = createContext({});
 
 const AuthProvider = ({ children }: ProviderProps) => {
-  const [authState, setAuthState] = useState<AuthState>({
-    userId: null,
-    jwtToken: null,
-  });
+  const [authState, setAuthState] = useState<AuthState>(defaultAuthState);
 
   useEffect(() => {
     // Hydrate auth state from localStorage on client-side
@@ -45,12 +48,22 @@ const AuthProvider = ({ children }: ProviderProps) => {
     setAuthState({ userId, jwtToken });
   }, []);
 
+  const memoizedRemoveAuthState = useMemo(() => {
+    const removeAuthState = () => {
+      setAuthState(defaultAuthState);
+      localStorage.setItem("userId", "");
+      localStorage.setItem("token", "");
+    };
+    return removeAuthState;
+  }, [setAuthState]);
+
   const value = useMemo(
     () => ({
       authState,
       setAuthState,
+      memoizedRemoveAuthState,
     }),
-    [authState, setAuthState],
+    [authState, setAuthState, memoizedRemoveAuthState],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
