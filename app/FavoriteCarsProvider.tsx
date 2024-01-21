@@ -1,11 +1,19 @@
 "use client";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { createContext, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 type FavoriteCarsContextType = {
   favoriteCars: any[];
   setFavoriteCars: Dispatch<SetStateAction<never[]>>;
+  addToFavorites: (carId: string) => void;
+  removeFromFavorites: (carId: string) => void;
 };
 
 type ProviderProps = {
@@ -15,14 +23,24 @@ type ProviderProps = {
 const FavoriteCarsContext = createContext({});
 
 const FavoriteCarsProvider = ({ children }: ProviderProps) => {
-  const [favoriteCars, setFavoriteCars] = useState([]);
+  const [favoriteCars, setFavoriteCars] = useState<string[]>([]);
+
+  const addToFavorites = useCallback((carId: string) => {
+    setFavoriteCars((current) => [...current, carId]);
+  }, []);
+
+  const removeFromFavorites = useCallback((carId: string) => {
+    setFavoriteCars((current) => current.filter((id) => id !== carId));
+  }, []);
 
   const value = useMemo(
     () => ({
       favoriteCars,
       setFavoriteCars,
+      addToFavorites,
+      removeFromFavorites,
     }),
-    [favoriteCars, setFavoriteCars],
+    [favoriteCars, setFavoriteCars, addToFavorites, removeFromFavorites],
   );
 
   return (

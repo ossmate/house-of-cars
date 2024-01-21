@@ -13,6 +13,7 @@ import { useAuthProvider } from "@/app/AuthProvider";
 import { Button } from "../ui/button";
 import { useAddCarToFavoriteMutation } from "@/app/server/actions/car/useAddCarToFavoriteMutation";
 import { useRemoveCarFromFavoriteMutation } from "@/app/server/actions/car/useRemoveCarFromFavoriteMutation";
+import { useFavoriteCarsProvider } from "@/app/FavoriteCarsProvider";
 
 type Props = {
   id: string;
@@ -44,6 +45,8 @@ export const CarTile = ({
   const {
     authState: { jwtToken },
   } = useAuthProvider();
+  const { favoriteCars, addToFavorites, removeFromFavorites } =
+    useFavoriteCarsProvider();
 
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
@@ -51,6 +54,22 @@ export const CarTile = ({
   const { addCarToFavoriteMutation } = useAddCarToFavoriteMutation();
   const { deleteCarFromFavoriteMutation } =
     useRemoveCarFromFavoriteMutation(isFavoritesList);
+
+  const onAddToFavorites = (carId: string) => {
+    if (jwtToken) {
+      addCarToFavoriteMutation.mutate(carId);
+    }
+
+    addToFavorites(carId);
+  };
+
+  const onRemoveFromFavorites = (carId: string) => {
+    if (jwtToken) {
+      deleteCarFromFavoriteMutation.mutate(carId);
+    }
+
+    removeFromFavorites(carId);
+  };
 
   const onRemoveCarClick = (carId: string) => {
     removeCarMutation.mutate(carId, {
@@ -80,6 +99,14 @@ export const CarTile = ({
     }
 
     return actions;
+  };
+
+  const isCarMarkedAsFavorite = (carId: string) => {
+    if (jwtToken) return isFavorite;
+
+    const isInProviderFavoritesList = favoriteCars.find((c) => c === carId);
+
+    return isInProviderFavoritesList;
   };
 
   return (
@@ -135,16 +162,16 @@ export const CarTile = ({
         <Button
           onClick={(e) => {
             e.preventDefault();
-            isFavorite
-              ? deleteCarFromFavoriteMutation.mutate(id)
-              : addCarToFavoriteMutation.mutate(id);
+            isCarMarkedAsFavorite(id)
+              ? onRemoveFromFavorites(id)
+              : onAddToFavorites(id);
           }}
           disabled={
             deleteCarFromFavoriteMutation.isPending ||
             addCarToFavoriteMutation.isPending
           }
         >
-          {isFavorite ? <FaHeart /> : <FaRegHeart />}
+          {isCarMarkedAsFavorite(id) ? <FaHeart /> : <FaRegHeart />}
         </Button>
         <p>
           <b>${price}</b>/day
