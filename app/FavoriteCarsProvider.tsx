@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -32,6 +33,24 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   const removeFromFavorites = useCallback((carId: string) => {
     setFavoriteCars((current) => current.filter((id) => id !== carId));
   }, []);
+
+  useEffect(function setFavoriteCarsFromLocalStorageToProviderState() {
+    const favoriteCarsFromLocalStorage = localStorage.getItem("favoriteCars");
+
+    if (
+      favoriteCarsFromLocalStorage &&
+      JSON.parse(favoriteCarsFromLocalStorage).length > 0
+    ) {
+      setFavoriteCars(JSON.parse(favoriteCarsFromLocalStorage));
+    }
+  }, []);
+
+  useEffect(
+    function setFavoriteItemsToLocalStorage() {
+      localStorage.setItem("favoriteCars", JSON.stringify(favoriteCars));
+    },
+    [favoriteCars],
+  );
 
   const value = useMemo(
     () => ({
