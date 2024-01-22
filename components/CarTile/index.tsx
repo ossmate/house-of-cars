@@ -45,7 +45,7 @@ export const CarTile = ({
   const {
     authState: { jwtToken },
   } = useAuthProvider();
-  const { favoriteCars, addToFavorites, removeFromFavorites } =
+  const { localFavoriteCars, addToFavorites, removeFromFavorites } =
     useFavoriteCarsProvider();
 
   const { push } = useRouter();
@@ -104,7 +104,9 @@ export const CarTile = ({
   const isCarMarkedAsFavorite = (carId: string) => {
     if (jwtToken) return isFavorite;
 
-    const isInProviderFavoritesList = favoriteCars.find((c) => c === carId);
+    const isInProviderFavoritesList = localFavoriteCars.find(
+      (c) => c === carId,
+    );
 
     return isInProviderFavoritesList;
   };

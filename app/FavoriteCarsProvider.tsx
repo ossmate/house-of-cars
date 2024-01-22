@@ -17,8 +17,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getCarsQueryKey } from "./server/actions/car/useCarsQuery";
 
 type FavoriteCarsContextType = {
-  favoriteCars: string[];
-  setFavoriteCars: Dispatch<SetStateAction<never[]>>;
+  localFavoriteCars: string[];
+  setLocalFavoriteCars: Dispatch<SetStateAction<never[]>>;
   addToFavorites: (carId: string) => void;
   removeFromFavorites: (carId: string) => void;
 };
@@ -30,8 +30,8 @@ type ProviderProps = {
 const FavoriteCarsContext = createContext({});
 
 const FavoriteCarsProvider = ({ children }: ProviderProps) => {
-  const [favoriteCars, setFavoriteCars] = useState<string[]>([]);
-  const [filteredIds, setFilteredIds] = useState<string[]>([]);
+  const [localFavoriteCars, setLocalFavoriteCars] = useState<string[]>([]);
+  const [filteredLocalCarIds, setFilteredLocalCarIds] = useState<string[]>([]);
   const [
     hasAdditionalFavoritesInLocalStorage,
     setHasAdditionalFavoritesInLocalStorage,
@@ -54,72 +54,71 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   const clearLocalStorageFavoriteCars = () =>
     localStorage.setItem("favoriteCars", "");
 
-  const combineLocalFavoriteCarsWithServerFavoriteCars = (carIds: string[]) => {
-    const promises = carIds.map((carId) =>
-      postAddCarToFavoriteRequest(carId, jwtToken, userId),
-    );
-
-    Promise.allSettled(promises)
-      .then(() => {
-        setHasAdditionalFavoritesInLocalStorage(false);
-        setFilteredIds([]);
-        clearLocalStorageFavoriteCars();
-      })
-      .then(() => {
-        queryClient.invalidateQueries({
-          queryKey: [getCarsQueryKey],
-        });
-      })
-      .catch((error) => {
-        console.error("Error in Promise.all:", error);
+  const combineLocalFavoriteCarsWithServerFavoriteCars = async (
+    carIds: string[],
+  ) => {
+    try {
+      await Promise.allSettled(
+        carIds.map((carId) =>
+          postAddCarToFavoriteRequest(carId, jwtToken, userId),
+        ),
+      );
+      setHasAdditionalFavoritesInLocalStorage(false);
+      setFilteredLocalCarIds([]);
+      clearLocalStorageFavoriteCars();
+      queryClient.invalidateQueries({
+        queryKey: [getCarsQueryKey],
       });
+    } catch (error) {
+      console.error("Error in Promise.all:", error);
+    }
   };
 
   const addToFavorites = useCallback((carId: string) => {
-    setFavoriteCars((current) => [...current, carId]);
+    setLocalFavoriteCars((current) => [...current, carId]);
   }, []);
 
   const removeFromFavorites = useCallback((carId: string) => {
-    setFavoriteCars((current) => current.filter((id) => id !== carId));
+    setLocalFavoriteCars((current) => current.filter((id) => id !== carId));
   }, []);
 
-  useEffect(function setFavoriteCarsFromLocalStorageToProviderState() {
+  useEffect(function setLocalFavoriteCarsFromLocalStorage() {
     const favoriteCarsFromLocalStorage = localStorage.getItem("favoriteCars");
 
     if (
       favoriteCarsFromLocalStorage &&
       JSON.parse(favoriteCarsFromLocalStorage).length > 0
     ) {
-      setFavoriteCars(JSON.parse(favoriteCarsFromLocalStorage));
+      setLocalFavoriteCars(JSON.parse(favoriteCarsFromLocalStorage));
     }
   }, []);
 
   useEffect(
-    function setFavoriteItemsToLocalStorage() {
-      localStorage.setItem("favoriteCars", JSON.stringify(favoriteCars));
+    function setLocalFavoriteCarsToLocalStorage() {
+      localStorage.setItem("favoriteCars", JSON.stringify(localFavoriteCars));
     },
-    [favoriteCars],
+    [localFavoriteCars],
   );
 
   useEffect(
-    function filterDifferencesBetweenFavoriteCarsStorageAndSaveIds() {
+    function filterDifferencesBetweenLocalAndServerFavoriteCars() {
       if (jwtToken && !serverFavoriteCarsLoading && !serverFavoriteCarsError) {
         if (Array.isArray(serverFavoriteCars)) {
-          const filteredIds = favoriteCars.filter(
+          const filteredLocalCarIds = localFavoriteCars.filter(
             (id) =>
               serverFavoriteCars &&
               !serverFavoriteCars.some((car) => car.id === id),
           );
 
-          if (filteredIds.length > 0) {
+          if (filteredLocalCarIds.length > 0) {
             setHasAdditionalFavoritesInLocalStorage(true);
-            setFilteredIds(filteredIds);
+            setFilteredLocalCarIds(filteredLocalCarIds);
           }
         }
       }
     },
     [
-      favoriteCars,
+      localFavoriteCars,
       jwtToken,
       serverFavoriteCars,
       serverFavoriteCarsError,
@@ -129,12 +128,17 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
 
   const value = useMemo(
     () => ({
-      favoriteCars,
-      setFavoriteCars,
+      localFavoriteCars,
+      setLocalFavoriteCars,
       addToFavorites,
       removeFromFavorites,
     }),
-    [favoriteCars, setFavoriteCars, addToFavorites, removeFromFavorites],
+    [
+      localFavoriteCars,
+      setLocalFavoriteCars,
+      addToFavorites,
+      removeFromFavorites,
+    ],
   );
 
   return (
@@ -143,12 +147,14 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       <CombineFavoriteCarsModal
         isOpen={hasAdditionalFavoritesInLocalStorage}
         onCancel={() => {
-          setFavoriteCars([]);
+          setLocalFavoriteCars([]);
           clearLocalStorageFavoriteCars();
           setHasAdditionalFavoritesInLocalStorage(false);
         }}
         onAccept={() => {
-          combineLocalFavoriteCarsWithServerFavoriteCars(filteredIds);
+          setLocalFavoriteCars([]);
+          clearLocalStorageFavoriteCars();
+          combineLocalFavoriteCarsWithServerFavoriteCars(filteredLocalCarIds);
         }}
       />
     </FavoriteCarsContext.Provider>
