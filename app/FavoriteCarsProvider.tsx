@@ -1,5 +1,6 @@
 "use client";
 
+import { CombineFavoriteCarsModal } from "@/components/CombineFavoriteCarsModal";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import {
   createContext,
@@ -9,9 +10,12 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useAuthProvider } from "./AuthProvider";
+import { useFavoriteCarsQuery } from "./server/actions/car/useFavoriteCarsQuery";
+import { postAddCarToFavoriteRequest } from "./server/actions/car/useAddCarToFavoriteMutation";
 
 type FavoriteCarsContextType = {
-  favoriteCars: any[];
+  favoriteCars: string[];
   setFavoriteCars: Dispatch<SetStateAction<never[]>>;
   addToFavorites: (carId: string) => void;
   removeFromFavorites: (carId: string) => void;
@@ -25,6 +29,40 @@ const FavoriteCarsContext = createContext({});
 
 const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   const [favoriteCars, setFavoriteCars] = useState<string[]>([]);
+  const [filteredIds, setFilteredIds] = useState<string[]>([]);
+  const [
+    hasAdditionalFavoritesInLocalStorage,
+    setHasAdditionalFavoritesInLocalStorage,
+  ] = useState(false);
+
+  const {
+    authState: { jwtToken, userId },
+  } = useAuthProvider();
+
+  const {
+    favoriteCarsQuery: {
+      data: serverFavoriteCars,
+      isLoading: serverFavoriteCarsLoading,
+      isError: serverFavoriteCarsError,
+    },
+  } = useFavoriteCarsQuery(Boolean(jwtToken));
+
+  const combineLocalFavoriteCarsWithServerFavoriteCars = (carIds: string[]) => {
+    const promises = carIds.map((carId) =>
+      postAddCarToFavoriteRequest(carId, jwtToken, userId),
+    );
+
+    Promise.allSettled(promises)
+      .then((responses) => {
+        setHasAdditionalFavoritesInLocalStorage(false);
+        setFilteredIds([]);
+        localStorage.setItem("favoriteCars", "");
+        console.log("All requests completed successfully", responses);
+      })
+      .catch((error) => {
+        console.error("Error in Promise.all:", error);
+      });
+  };
 
   const addToFavorites = useCallback((carId: string) => {
     setFavoriteCars((current) => [...current, carId]);
@@ -52,6 +90,25 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     [favoriteCars],
   );
 
+  useEffect(() => {
+    if (jwtToken || !serverFavoriteCarsLoading || !serverFavoriteCarsError) {
+      const filteredIds = favoriteCars.filter(
+        (id) => !serverFavoriteCars?.some((car) => car.id === id),
+      );
+
+      if (filteredIds.length > 0) {
+        setHasAdditionalFavoritesInLocalStorage(true);
+        setFilteredIds(filteredIds);
+      }
+    }
+  }, [
+    favoriteCars,
+    jwtToken,
+    serverFavoriteCars,
+    serverFavoriteCarsError,
+    serverFavoriteCarsLoading,
+  ]);
+
   const value = useMemo(
     () => ({
       favoriteCars,
@@ -65,6 +122,15 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   return (
     <FavoriteCarsContext.Provider value={value}>
       {children}
+      <CombineFavoriteCarsModal
+        isOpen={hasAdditionalFavoritesInLocalStorage}
+        onCancel={() => {
+          setHasAdditionalFavoritesInLocalStorage(false);
+        }}
+        onAccept={() => {
+          combineLocalFavoriteCarsWithServerFavoriteCars(filteredIds);
+        }}
+      />
     </FavoriteCarsContext.Provider>
   );
 };

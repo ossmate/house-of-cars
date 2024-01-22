@@ -30,10 +30,11 @@ export const fetchFavoriteCars = async () => {
   }
 };
 
-export const useFavoriteCarsQuery = () => {
+export const useFavoriteCarsQuery = (isEnabled = true) => {
   const favoriteCarsQuery = useQuery<Car[]>({
     queryKey: [getFavoriteCarsQueryKey],
     queryFn: () => fetchFavoriteCars(),
+    enabled: isEnabled,
   });
 
   return { favoriteCarsQuery };

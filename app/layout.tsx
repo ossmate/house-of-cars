@@ -20,14 +20,14 @@ export default function RootLayout({
 }) {
   return (
     <AuthProvider>
-      <FavoriteCarsProvider>
-        <html lang="en">
-          <body className={inter.className}>
-            <Navigation />
-            <ReactQueryProvider>{children}</ReactQueryProvider>
-          </body>
-        </html>
-      </FavoriteCarsProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Navigation />
+          <ReactQueryProvider>
+            <FavoriteCarsProvider>{children}</FavoriteCarsProvider>
+          </ReactQueryProvider>
+        </body>
+      </html>
     </AuthProvider>
   );
 }
