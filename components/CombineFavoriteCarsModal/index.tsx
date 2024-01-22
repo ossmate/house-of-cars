@@ -10,10 +10,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-type Props = { isOpen: boolean; onAccept: () => void; onCancel: () => void };
+type Props = {
+  isOpen: boolean;
+  isPending: boolean;
+  onAccept: () => void;
+  onCancel: () => void;
+};
 
 export const CombineFavoriteCarsModal = ({
   isOpen,
+  isPending,
   onAccept,
   onCancel,
 }: Props) => {
@@ -28,8 +34,12 @@ export const CombineFavoriteCarsModal = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onAccept}>Continue</AlertDialogAction>
+          <AlertDialogCancel disabled={isPending} onClick={onCancel}>
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction disabled={isPending} onClick={onAccept}>
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

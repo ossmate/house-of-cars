@@ -36,6 +36,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     hasAdditionalFavoritesInLocalStorage,
     setHasAdditionalFavoritesInLocalStorage,
   ] = useState(false);
+  const [addToFavoritesStatus, setAddToFavoritesStatus] = useState("idle");
 
   const queryClient = useQueryClient();
 
@@ -57,6 +58,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   const combineLocalFavoriteCarsWithServerFavoriteCars = async (
     carIds: string[],
   ) => {
+    setAddToFavoritesStatus("pending");
     try {
       await Promise.allSettled(
         carIds.map((carId) =>
@@ -69,8 +71,10 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       queryClient.invalidateQueries({
         queryKey: [getCarsQueryKey],
       });
+      setAddToFavoritesStatus("resolved");
     } catch (error) {
       console.error("Error in Promise.all:", error);
+      setAddToFavoritesStatus("rejected");
     }
   };
 
@@ -145,6 +149,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     <FavoriteCarsContext.Provider value={value}>
       {children}
       <CombineFavoriteCarsModal
+        isPending={addToFavoritesStatus === "pending"}
         isOpen={hasAdditionalFavoritesInLocalStorage}
         onCancel={() => {
           setLocalFavoriteCars([]);
