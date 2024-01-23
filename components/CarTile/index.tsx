@@ -58,6 +58,7 @@ export const CarTile = ({
   const onAddToFavorites = (carId: string) => {
     if (jwtToken) {
       addCarToFavoriteMutation.mutate(carId);
+      return;
     }
 
     addToFavorites(carId);

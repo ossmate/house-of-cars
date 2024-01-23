@@ -155,6 +155,9 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
           setLocalFavoriteCars([]);
           clearLocalStorageFavoriteCars();
           setHasAdditionalFavoritesInLocalStorage(false);
+          queryClient.invalidateQueries({
+            queryKey: [getCarsQueryKey],
+          });
         }}
         onAccept={() => {
           setLocalFavoriteCars([]);

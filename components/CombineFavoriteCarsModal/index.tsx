@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "../ui/button";
 
 type Props = {
   isOpen: boolean;
@@ -27,19 +28,22 @@ export const CombineFavoriteCarsModal = ({
     <AlertDialog open={isOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Merge Favorite Cars</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Merge locally stored favorite cars with your current saved cars?
+            This action is irreversible. Review changes before confirming.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending} onClick={onCancel}>
+          <Button variant="secondary" disabled={isPending} onClick={onCancel}>
             Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction disabled={isPending} onClick={onAccept}>
-            Continue
-          </AlertDialogAction>
+          </Button>
+          <Button variant="ghost" disabled={isPending} onClick={onCancel}>
+            Ask me later
+          </Button>
+          <Button disabled={isPending} onClick={onAccept}>
+            Merge
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
