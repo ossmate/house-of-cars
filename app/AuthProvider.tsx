@@ -62,9 +62,9 @@ const AuthProvider = ({ children }: ProviderProps) => {
       const expirationTime = iatAsTimestamp + expiresInMs;
       const currentTime = Date.now();
 
-      console.log("iatAsTimestamp:", iatAsTimestamp);
-      console.log("expirationTime:", expirationTime);
-      console.log("currentTime:", currentTime);
+      // console.log("iatAsTimestamp:", iatAsTimestamp);
+      // console.log("expirationTime:", expirationTime);
+      // console.log("currentTime:", currentTime);
 
       if (currentTime > expirationTime) {
         setAuthState(defaultAuthState);
@@ -75,8 +75,8 @@ const AuthProvider = ({ children }: ProviderProps) => {
         const remainingTimeMs = expirationTime - currentTime;
         const remainingMinutes = Math.floor(remainingTimeMs / (60 * 1000));
 
-        console.log("Remaining Time (ms):", remainingTimeMs);
-        console.log("Remaining Minutes:", remainingMinutes);
+        // console.log("Remaining Time (ms):", remainingTimeMs);
+        // console.log("Remaining Minutes:", remainingMinutes);
       }
     };
 

@@ -42,7 +42,7 @@ export const useSignInMutation = () => {
 
   const signInMutation = useMutation({
     mutationFn: (formData: SignInTypeSchema) => signInRequest(formData),
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       localStorage.setItem("token", data?.token);
       localStorage.setItem("userId", data?.userId);
       localStorage.setItem("iat", String(data?.iat));

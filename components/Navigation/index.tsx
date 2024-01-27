@@ -21,7 +21,7 @@ export const Navigation = () => {
   const menuItems = [
     { id: 1, label: "Home", href: "/" },
     { id: 2, label: "Cars", href: "/cars" },
-    { id: 3, label: "Favorites", href: "/favorite", enabled: jwtToken },
+    { id: 3, label: "Favorites", href: "/favorite" },
     { id: 4, label: "Settings", href: "/settings", enabled: jwtToken },
     { id: 5, label: "Sign In", href: "/sign-in", enabled: !jwtToken },
     { id: 6, label: "Sign Out", href: "/sign-out", enabled: jwtToken },

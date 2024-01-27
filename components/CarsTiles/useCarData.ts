@@ -37,7 +37,7 @@ export const useCarData = ({
       isLoading: favoriteCarsLoading,
       isError: favoriteCarsError,
     },
-  } = useFavoriteCarsQuery(Boolean(jwtToken));
+  } = useFavoriteCarsQuery(Boolean(jwtToken) && isFavoritesList);
 
   return {
     cars: isFavoritesList ? favoriteCars : carsData,
