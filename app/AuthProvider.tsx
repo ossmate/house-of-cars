@@ -57,35 +57,24 @@ const AuthProvider = ({ children }: ProviderProps) => {
     };
 
     const checkTokenExpiration = () => {
-      const expiresInMs = 15 * 60 * 1000; // Assuming 15 minutes expiration
-      const iatAsTimestamp = parseInt(authState.iat as string, 10) * 1000; // Convert to milliseconds
+      const expiresInMs = 15 * 60 * 1000;
+      const iatAsTimestamp = parseInt(authState.iat as string, 10) * 1000;
       const expirationTime = iatAsTimestamp + expiresInMs;
       const currentTime = Date.now();
-
-      // console.log("iatAsTimestamp:", iatAsTimestamp);
-      // console.log("expirationTime:", expirationTime);
-      // console.log("currentTime:", currentTime);
 
       if (currentTime > expirationTime) {
         setAuthState(defaultAuthState);
         localStorage.setItem("userId", "");
         localStorage.setItem("token", "");
         localStorage.setItem("iat", "");
-      } else {
-        const remainingTimeMs = expirationTime - currentTime;
-        const remainingMinutes = Math.floor(remainingTimeMs / (60 * 1000));
-
-        // console.log("Remaining Time (ms):", remainingTimeMs);
-        // console.log("Remaining Minutes:", remainingMinutes);
       }
     };
 
-    const intervalId = setInterval(checkTokenExpiration, 10000); // Check every 10 seconds
-
+    const intervalId = setInterval(checkTokenExpiration, 10000);
     hydrateAuthState();
 
     return () => {
-      clearInterval(intervalId); // Cleanup on component unmount
+      clearInterval(intervalId);
     };
   }, [authState.iat]);
 
