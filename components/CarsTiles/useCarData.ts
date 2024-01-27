@@ -1,3 +1,4 @@
+import { useAuthProvider } from "@/app/AuthProvider";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { Car, useCarsQuery } from "@/app/server/actions/car/useCarsQuery";
 import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
@@ -18,6 +19,10 @@ export const useCarData = ({
   isFavoritesList,
 }: CarsTilesProps) => {
   const {
+    authState: { jwtToken },
+  } = useAuthProvider();
+
+  const {
     carsQuery: { data: carsData, isLoading: carsLoading, isError: carsError },
   } = useCarsQuery({
     onlyHighlighted,
@@ -32,7 +37,7 @@ export const useCarData = ({
       isLoading: favoriteCarsLoading,
       isError: favoriteCarsError,
     },
-  } = useFavoriteCarsQuery();
+  } = useFavoriteCarsQuery(Boolean(jwtToken) && isFavoritesList);
 
   return {
     cars: isFavoritesList ? favoriteCars : carsData,

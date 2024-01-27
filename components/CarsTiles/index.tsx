@@ -37,7 +37,7 @@ export const CarsTiles = ({
   if (isError) return <div>Error!</div>;
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex flex-col items-center">
       {shouldDisplayBrandSelector && (
         <BrandTiles
           initialBrands={brands}

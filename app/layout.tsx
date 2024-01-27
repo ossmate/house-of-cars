@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navigation } from "../components/Navigation";
 import { ReactQueryProvider } from "./ReactQueryProvider";
 import { AuthProvider } from "./AuthProvider";
+import { FavoriteCarsProvider } from "./FavoriteCarsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <Navigation />
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <FavoriteCarsProvider>{children}</FavoriteCarsProvider>
+          </ReactQueryProvider>
         </body>
       </html>
     </AuthProvider>

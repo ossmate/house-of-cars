@@ -14,7 +14,7 @@ export const useSignInMutation = () => {
 
   const signInRequest = async (
     formData: SignInTypeSchema,
-  ): Promise<{ data: { token: string; userId: string } }> => {
+  ): Promise<{ data: { token: string; userId: string; iat: number } }> => {
     try {
       const response = await fetch(`http://localhost:5000/signin`, {
         method: "POST",
@@ -42,10 +42,16 @@ export const useSignInMutation = () => {
 
   const signInMutation = useMutation({
     mutationFn: (formData: SignInTypeSchema) => signInRequest(formData),
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       localStorage.setItem("token", data?.token);
       localStorage.setItem("userId", data?.userId);
-      setAuthState({ userId: data?.userId, jwtToken: data?.token });
+      localStorage.setItem("iat", String(data?.iat));
+
+      setAuthState({
+        userId: data?.userId,
+        jwtToken: data?.token,
+        iat: data?.iat,
+      });
     },
     onError: (error) => {
       console.error("Error during sign in:", error);
