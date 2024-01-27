@@ -1,6 +1,5 @@
 "use client";
 
-import { CombineFavoriteCarsModal } from "@/components/CombineFavoriteCarsModal";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import {
   createContext,
@@ -10,10 +9,12 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { CombineFavoriteCarsModal } from "@/components/CombineFavoriteCarsModal";
 import { useAuthProvider } from "./AuthProvider";
 import { useFavoriteCarsQuery } from "./server/actions/car/useFavoriteCarsQuery";
 import { postAddCarToFavoriteRequest } from "./server/actions/car/useAddCarToFavoriteMutation";
-import { useQueryClient } from "@tanstack/react-query";
 import { getCarsQueryKey } from "./server/actions/car/useCarsQuery";
 
 type FavoriteCarsContextType = {
@@ -37,6 +38,14 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     setHasAdditionalFavoritesInLocalStorage,
   ] = useState(false);
   const [addToFavoritesStatus, setAddToFavoritesStatus] = useState("idle");
+  const [modalVisibilityConfig, setModalVisibilityConfig] = useState<{
+    triggerTimes: number;
+    shouldAskLater: boolean;
+  }>({
+    triggerTimes: 0,
+    shouldAskLater: false,
+  });
+  const [modalTimeoutId, setModalTimeoutId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -51,6 +60,53 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       isError: serverFavoriteCarsError,
     },
   } = useFavoriteCarsQuery(Boolean(jwtToken));
+
+  const handleAccept = () => {
+    if (modalTimeoutId) {
+      clearTimeout(modalTimeoutId);
+    }
+
+    setLocalFavoriteCars([]);
+    clearLocalStorageFavoriteCars();
+    combineLocalFavoriteCarsWithServerFavoriteCars(filteredLocalCarIds);
+  };
+
+  const handleCancel = () => {
+    if (modalTimeoutId) {
+      clearTimeout(modalTimeoutId);
+    }
+
+    setLocalFavoriteCars([]);
+    clearLocalStorageFavoriteCars();
+    setHasAdditionalFavoritesInLocalStorage(false);
+    queryClient.invalidateQueries({
+      queryKey: [getCarsQueryKey],
+    });
+  };
+
+  const resetTriggerCountAndScheduleModal = () => {
+    if (modalVisibilityConfig.triggerTimes >= 3) {
+      handleCancel();
+      return;
+    }
+
+    setModalVisibilityConfig((current) => ({
+      triggerTimes: current.triggerTimes + 1,
+      shouldAskLater: false,
+    }));
+
+    const timeoutId = window.setTimeout(
+      () => {
+        setModalVisibilityConfig((current) => ({
+          ...current,
+          shouldAskLater: true,
+        }));
+      },
+      modalVisibilityConfig.triggerTimes + 1 * 60 * 1000,
+    );
+
+    setModalTimeoutId(timeoutId);
+  };
 
   const clearLocalStorageFavoriteCars = () =>
     localStorage.setItem("favoriteCars", "");
@@ -130,6 +186,17 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     ],
   );
 
+  useEffect(
+    function showModal() {
+      return () => {
+        if (modalTimeoutId) {
+          clearTimeout(modalTimeoutId);
+        }
+      };
+    },
+    [modalTimeoutId],
+  );
+
   const value = useMemo(
     () => ({
       localFavoriteCars,
@@ -150,20 +217,14 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       {children}
       <CombineFavoriteCarsModal
         isPending={addToFavoritesStatus === "pending"}
-        isOpen={hasAdditionalFavoritesInLocalStorage}
-        onCancel={() => {
-          setLocalFavoriteCars([]);
-          clearLocalStorageFavoriteCars();
-          setHasAdditionalFavoritesInLocalStorage(false);
-          queryClient.invalidateQueries({
-            queryKey: [getCarsQueryKey],
-          });
-        }}
-        onAccept={() => {
-          setLocalFavoriteCars([]);
-          clearLocalStorageFavoriteCars();
-          combineLocalFavoriteCarsWithServerFavoriteCars(filteredLocalCarIds);
-        }}
+        isOpen={
+          hasAdditionalFavoritesInLocalStorage &&
+          (modalVisibilityConfig.triggerTimes === 0 ||
+            modalVisibilityConfig.shouldAskLater)
+        }
+        onCancel={handleCancel}
+        onAccept={handleAccept}
+        onAskLater={resetTriggerCountAndScheduleModal}
       />
     </FavoriteCarsContext.Provider>
   );

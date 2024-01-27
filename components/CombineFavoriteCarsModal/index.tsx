@@ -1,13 +1,10 @@
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
 
@@ -16,6 +13,7 @@ type Props = {
   isPending: boolean;
   onAccept: () => void;
   onCancel: () => void;
+  onAskLater: () => void;
 };
 
 export const CombineFavoriteCarsModal = ({
@@ -23,6 +21,7 @@ export const CombineFavoriteCarsModal = ({
   isPending,
   onAccept,
   onCancel,
+  onAskLater,
 }: Props) => {
   return (
     <AlertDialog open={isOpen}>
@@ -38,7 +37,7 @@ export const CombineFavoriteCarsModal = ({
           <Button variant="secondary" disabled={isPending} onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="ghost" disabled={isPending} onClick={onCancel}>
+          <Button variant="ghost" disabled={isPending} onClick={onAskLater}>
             Ask me later
           </Button>
           <Button disabled={isPending} onClick={onAccept}>
