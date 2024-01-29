@@ -6,7 +6,7 @@ import { getCar } from "../cars/[id]/page";
 import { Car } from "../server/actions/car/useCarsQuery";
 import { useCallback, useEffect, useState } from "react";
 import { CarTile } from "@/components/CarTile";
-import { useFavoriteCarsProvider } from "../FavoriteCarsProvider";
+import { useFavoriteCarsProvider } from "../providers/FavoriteCarsProvider";
 
 export default function Favorite() {
   const [favoriteCars, setFavoriteCars] = useState<Car[]>([]);

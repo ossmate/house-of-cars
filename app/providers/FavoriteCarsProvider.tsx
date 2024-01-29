@@ -12,10 +12,11 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 
 import { CombineFavoriteCarsModal } from "@/components/CombineFavoriteCarsModal";
-import { useAuthProvider } from "./AuthProvider";
-import { useFavoriteCarsQuery } from "./server/actions/car/useFavoriteCarsQuery";
-import { postAddCarToFavoriteRequest } from "./server/actions/car/useAddCarToFavoriteMutation";
-import { getCarsQueryKey } from "./server/actions/car/useCarsQuery";
+import { useAuthProvider } from "../AuthProvider";
+import { useFavoriteCarsQuery } from "../server/actions/car/useFavoriteCarsQuery";
+import { postAddCarToFavoriteRequest } from "../server/actions/car/useAddCarToFavoriteMutation";
+import { getCarsQueryKey } from "../server/actions/car/useCarsQuery";
+import { useModalTimeout } from "../hooks/useModalTimeout";
 
 type FavoriteCarsContextType = {
   localFavoriteCars: string[];
@@ -45,9 +46,9 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     triggerTimes: 0,
     shouldAskLater: false,
   });
-  const [modalTimeoutId, setModalTimeoutId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
+  const { modalTimeoutId, setModalTimeoutId } = useModalTimeout();
 
   const {
     authState: { jwtToken, userId },
@@ -184,17 +185,6 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       serverFavoriteCarsError,
       serverFavoriteCarsLoading,
     ],
-  );
-
-  useEffect(
-    function showModal() {
-      return () => {
-        if (modalTimeoutId) {
-          clearTimeout(modalTimeoutId);
-        }
-      };
-    },
-    [modalTimeoutId],
   );
 
   const value = useMemo(

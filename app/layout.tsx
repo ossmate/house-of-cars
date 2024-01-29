@@ -4,7 +4,7 @@ import "./globals.css";
 import { Navigation } from "../components/Navigation";
 import { ReactQueryProvider } from "./ReactQueryProvider";
 import { AuthProvider } from "./AuthProvider";
-import { FavoriteCarsProvider } from "./FavoriteCarsProvider";
+import { FavoriteCarsProvider } from "./providers/FavoriteCarsProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 

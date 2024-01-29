@@ -13,7 +13,7 @@ import { useAuthProvider } from "@/app/AuthProvider";
 import { Button } from "../ui/button";
 import { useAddCarToFavoriteMutation } from "@/app/server/actions/car/useAddCarToFavoriteMutation";
 import { useRemoveCarFromFavoriteMutation } from "@/app/server/actions/car/useRemoveCarFromFavoriteMutation";
-import { useFavoriteCarsProvider } from "@/app/FavoriteCarsProvider";
+import { useFavoriteCarsProvider } from "@/app/providers/FavoriteCarsProvider";
 
 type Props = {
   id: string;
