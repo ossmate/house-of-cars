@@ -88,13 +88,18 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
   const resetTriggerCountAndScheduleModal = () => {
     if (modalVisibilityConfig.triggerTimes >= 3) {
       handleCancel();
+      localStorage.setItem("triggerTimes", "");
       return;
     }
 
-    setModalVisibilityConfig((current) => ({
-      triggerTimes: current.triggerTimes + 1,
-      shouldAskLater: false,
-    }));
+    setModalVisibilityConfig((current) => {
+      localStorage.setItem("triggerTimes", String(current.triggerTimes + 1));
+
+      return {
+        triggerTimes: current.triggerTimes + 1,
+        shouldAskLater: false,
+      };
+    });
 
     const timeoutId = window.setTimeout(
       () => {
@@ -141,6 +146,17 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
 
   const removeFromFavorites = useCallback((carId: string) => {
     setLocalFavoriteCars((current) => current.filter((id) => id !== carId));
+  }, []);
+
+  useEffect(function setTriggerTimes() {
+    const triggeredTimesFromLocalStorage = localStorage.getItem("triggerTimes");
+
+    if (Number(triggeredTimesFromLocalStorage) <= 3) {
+      setModalVisibilityConfig({
+        triggerTimes: Number(triggeredTimesFromLocalStorage),
+        shouldAskLater: true,
+      });
+    }
   }, []);
 
   useEffect(function setLocalFavoriteCarsFromLocalStorage() {
