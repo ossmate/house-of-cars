@@ -5,6 +5,7 @@ import { Navigation } from "../components/Navigation";
 import { ReactQueryProvider } from "./ReactQueryProvider";
 import { AuthProvider } from "./AuthProvider";
 import { FavoriteCarsProvider } from "./providers/FavoriteCarsProvider";
+import Providers from "./providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +20,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <Navigation />
-          <ReactQueryProvider>
-            <FavoriteCarsProvider>{children}</FavoriteCarsProvider>
-          </ReactQueryProvider>
-        </body>
-      </html>
-    </AuthProvider>
+    <Providers>
+      <AuthProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <Navigation />
+            <ReactQueryProvider>
+              <FavoriteCarsProvider>{children}</FavoriteCarsProvider>
+            </ReactQueryProvider>
+          </body>
+        </html>
+      </AuthProvider>
+    </Providers>
   );
 }
