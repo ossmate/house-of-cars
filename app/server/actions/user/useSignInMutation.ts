@@ -9,7 +9,7 @@ export const signInSchema = z.object({
 export type SignInTypeSchema = z.infer<typeof signInSchema>;
 
 export const useSignInMutation = () => {
-  const { setAuthState } = useAuthProvider();
+  // const { setAuthState } = useAuthProvider();
 
   const signInRequest = async (
     formData: SignInTypeSchema,
@@ -46,11 +46,11 @@ export const useSignInMutation = () => {
       localStorage.setItem("userId", data?.userId);
       localStorage.setItem("iat", String(data?.iat));
 
-      setAuthState({
-        userId: data?.userId,
-        jwtToken: data?.token,
-        iat: data?.iat,
-      });
+      // setAuthState({
+      //   userId: data?.userId,
+      //   jwtToken: data?.token,
+      //   iat: data?.iat,
+      // });
     },
     onError: (error) => {
       console.error("Error during sign in:", error);
