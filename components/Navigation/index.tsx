@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuthProvider } from "@/app/AuthProvider";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -16,9 +15,6 @@ import { signOut } from "next-auth/react";
 
 export const Navigation = () => {
   const { status } = useSession();
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
   const pathname = usePathname();
 
   const isAuthenticated = status === "authenticated";

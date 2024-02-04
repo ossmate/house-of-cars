@@ -1,7 +1,9 @@
-import { useAuthProvider } from "@/app/AuthProvider";
+"use client";
+
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { Car, useCarsQuery } from "@/app/server/actions/car/useCarsQuery";
 import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
+import { useSession } from "next-auth/react";
 
 interface CarsTilesProps {
   initialData?: Car[];
@@ -18,9 +20,7 @@ export const useCarData = ({
   initialData,
   isFavoritesList,
 }: CarsTilesProps) => {
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
+  const { data } = useSession();
 
   const {
     carsQuery: { data: carsData, isLoading: carsLoading, isError: carsError },
@@ -37,7 +37,7 @@ export const useCarData = ({
       isLoading: favoriteCarsLoading,
       isError: favoriteCarsError,
     },
-  } = useFavoriteCarsQuery(Boolean(jwtToken) && isFavoritesList);
+  } = useFavoriteCarsQuery(Boolean(data?.token) && isFavoritesList);
 
   return {
     cars: isFavoritesList ? favoriteCars : carsData,

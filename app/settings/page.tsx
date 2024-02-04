@@ -3,14 +3,12 @@
 import { BrandsTable } from "@/components/BrandsTable";
 import { AddNewBrand } from "@/components/forms/AddNewBrand";
 import { AddNewCar } from "@/components/forms/AddNewCar";
-import { useAuthProvider } from "../AuthProvider";
+import { useSession } from "next-auth/react";
 
 export default function Settings() {
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
+  const { data } = useSession();
 
-  if (!jwtToken) {
+  if (!data?.token) {
     return <div>Unauthorized</div>;
   }
 

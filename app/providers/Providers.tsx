@@ -7,8 +7,8 @@ type Props = {
   children: ReactNode;
 };
 
-const Providers = ({ children }: Props) => {
+const AuthProvider = ({ children }: Props) => {
   return <SessionProvider>{children}</SessionProvider>;
 };
 
-export default Providers;
+export default AuthProvider;

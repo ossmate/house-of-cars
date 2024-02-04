@@ -1,13 +1,12 @@
 "use client";
 
-import { Car, useCarsQuery } from "@/app/server/actions/car/useCarsQuery";
+import { Car } from "@/app/server/actions/car/useCarsQuery";
 import { CarTile } from "../CarTile";
 import { CarTileSkeleton } from "../CarTile/CarTileSkeleton";
 
 import { useState } from "react";
 import { BrandTiles } from "../BrandTiles";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
-import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
 import { useCarData } from "./useCarData";
 
 type Props = {

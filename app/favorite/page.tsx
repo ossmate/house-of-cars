@@ -1,23 +1,21 @@
 "use client";
 
 import { CarsTiles } from "@/components/CarsTiles";
-import { useAuthProvider } from "../AuthProvider";
 import { getCar } from "../cars/[id]/page";
 import { Car } from "../server/actions/car/useCarsQuery";
 import { useCallback, useEffect, useState } from "react";
 import { CarTile } from "@/components/CarTile";
 import { useFavoriteCarsProvider } from "../providers/FavoriteCarsProvider";
+import { useSession } from "next-auth/react";
 
 export default function Favorite() {
   const [favoriteCars, setFavoriteCars] = useState<Car[]>([]);
 
   const { localFavoriteCars } = useFavoriteCarsProvider();
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
+  const { data } = useSession();
 
   const getAllFavoriteCarsByLocalStorageIds = useCallback(async () => {
-    if (!jwtToken && localFavoriteCars) {
+    if (!data?.token && localFavoriteCars) {
       const favoriteCars: Car[] = [];
 
       try {
@@ -33,7 +31,7 @@ export default function Favorite() {
         console.error("Error in Promise.all:", error);
       }
     }
-  }, [jwtToken, localFavoriteCars]);
+  }, [data?.token, localFavoriteCars]);
 
   useEffect(() => {
     getAllFavoriteCarsByLocalStorageIds();
@@ -41,7 +39,7 @@ export default function Favorite() {
 
   return (
     <main className="flex flex-col items-center justify-between p-24">
-      <CarsTiles shouldDisplayBrandSelector={false} isFavoritesList={true} />
+      {/* <CarsTiles shouldDisplayBrandSelector={false} isFavoritesList={true} /> */}
 
       {/* NOTE: seems like i have to decide, use CarTiles component and pass data as prop or just use single CarTile entity to map over data  */}
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 gap-y-6 gap-x-6">
