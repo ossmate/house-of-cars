@@ -1,17 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { createAPIPath } from "@/lib/utils";
 import { Car } from "./useCarsQuery";
+import { useSession } from "next-auth/react";
 
 export const getFavoriteCarsQueryKey = "favorite-cars";
 
-export const fetchFavoriteCars = async () => {
+export const fetchFavoriteCars = async ({
+  userId,
+  token,
+}: {
+  userId?: string;
+  token?: string;
+}) => {
   try {
     const headers: Record<string, string> = {};
-    const userId = localStorage.getItem("userId");
 
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
@@ -31,9 +35,11 @@ export const fetchFavoriteCars = async () => {
 };
 
 export const useFavoriteCarsQuery = (isEnabled = true) => {
+  const { data } = useSession();
   const favoriteCarsQuery = useQuery<Car[]>({
     queryKey: [getFavoriteCarsQueryKey],
-    queryFn: () => fetchFavoriteCars(),
+    queryFn: () =>
+      fetchFavoriteCars({ userId: data?.userId, token: data?.token }),
     enabled: isEnabled,
   });
 

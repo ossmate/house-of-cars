@@ -1,5 +1,3 @@
-"use client";
-
 import { Brand } from "@/app/api/brand/useBrandsQuery";
 import { Car, useCarsQuery } from "@/app/server/actions/car/useCarsQuery";
 import { useFavoriteCarsQuery } from "@/app/server/actions/car/useFavoriteCarsQuery";
