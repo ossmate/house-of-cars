@@ -1,23 +1,21 @@
 "use client";
 
 import { CarsTiles } from "@/components/CarsTiles";
-import { useAuthProvider } from "../AuthProvider";
 import { getCar } from "../cars/[id]/page";
 import { Car } from "../server/actions/car/useCarsQuery";
 import { useCallback, useEffect, useState } from "react";
 import { CarTile } from "@/components/CarTile";
 import { useFavoriteCarsProvider } from "../providers/FavoriteCarsProvider";
+import { useSession } from "next-auth/react";
 
 export default function Favorite() {
   const [favoriteCars, setFavoriteCars] = useState<Car[]>([]);
 
   const { localFavoriteCars } = useFavoriteCarsProvider();
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
+  const { data } = useSession();
 
   const getAllFavoriteCarsByLocalStorageIds = useCallback(async () => {
-    if (!jwtToken && localFavoriteCars) {
+    if (!data?.token && localFavoriteCars) {
       const favoriteCars: Car[] = [];
 
       try {
@@ -33,7 +31,7 @@ export default function Favorite() {
         console.error("Error in Promise.all:", error);
       }
     }
-  }, [jwtToken, localFavoriteCars]);
+  }, [data?.token, localFavoriteCars]);
 
   useEffect(() => {
     getAllFavoriteCarsByLocalStorageIds();

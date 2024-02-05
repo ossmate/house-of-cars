@@ -12,11 +12,11 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 
 import { CombineFavoriteCarsModal } from "@/components/CombineFavoriteCarsModal";
-import { useAuthProvider } from "../AuthProvider";
 import { useFavoriteCarsQuery } from "../server/actions/car/useFavoriteCarsQuery";
 import { postAddCarToFavoriteRequest } from "../server/actions/car/useAddCarToFavoriteMutation";
 import { getCarsQueryKey } from "../server/actions/car/useCarsQuery";
 import { useModalTimeout } from "../hooks/useModalTimeout";
+import { useSession } from "next-auth/react";
 
 type FavoriteCarsContextType = {
   localFavoriteCars: string[];
@@ -49,10 +49,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
 
   const queryClient = useQueryClient();
   const { modalTimeoutId, setModalTimeoutId } = useModalTimeout();
-
-  const {
-    authState: { jwtToken, userId },
-  } = useAuthProvider();
+  const { data } = useSession();
 
   const {
     favoriteCarsQuery: {
@@ -60,7 +57,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
       isLoading: serverFavoriteCarsLoading,
       isError: serverFavoriteCarsError,
     },
-  } = useFavoriteCarsQuery(Boolean(jwtToken));
+  } = useFavoriteCarsQuery(Boolean(data?.token));
 
   const handleAccept = () => {
     if (modalTimeoutId) {
@@ -124,7 +121,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     try {
       await Promise.allSettled(
         carIds.map((carId) =>
-          postAddCarToFavoriteRequest(carId, jwtToken, userId),
+          postAddCarToFavoriteRequest(carId, data?.token, data?.userId),
         ),
       );
       setHasAdditionalFavoritesInLocalStorage(false);
@@ -179,7 +176,11 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
 
   useEffect(
     function filterDifferencesBetweenLocalAndServerFavoriteCars() {
-      if (jwtToken && !serverFavoriteCarsLoading && !serverFavoriteCarsError) {
+      if (
+        data?.token &&
+        !serverFavoriteCarsLoading &&
+        !serverFavoriteCarsError
+      ) {
         if (Array.isArray(serverFavoriteCars)) {
           const filteredLocalCarIds = localFavoriteCars.filter(
             (id) =>
@@ -196,7 +197,7 @@ const FavoriteCarsProvider = ({ children }: ProviderProps) => {
     },
     [
       localFavoriteCars,
-      jwtToken,
+      data?.token,
       serverFavoriteCars,
       serverFavoriteCarsError,
       serverFavoriteCarsLoading,

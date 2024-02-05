@@ -2,6 +2,7 @@ import qs from "qs";
 import { useQuery } from "@tanstack/react-query";
 import { createAPIPath } from "@/lib/utils";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
+import { useSession } from "next-auth/react";
 
 export type Car = {
   id: string;
@@ -22,9 +23,13 @@ export const getCarsQueryKey = "cars";
 export const fetchCarsData = async ({
   onlyHighlighted,
   brandId,
+  userId,
+  token,
 }: {
   onlyHighlighted?: boolean;
   brandId?: string | null;
+  userId?: string;
+  token?: string;
 }) => {
   try {
     const queryParams = { onlyHighlighted, brandId };
@@ -33,7 +38,6 @@ export const fetchCarsData = async ({
     const headers: Record<string, string> = {};
 
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
@@ -65,11 +69,19 @@ export const useCarsQuery = ({
   brandId = undefined,
   isEnabled = true,
 }: QueryParams & { initialData?: Car[] }) => {
+  const { data } = useSession();
+
   const queryKey = [getCarsQueryKey, onlyHighlighted, brandId].filter(Boolean);
 
   const carsQuery = useQuery<Car[]>({
     queryKey,
-    queryFn: () => fetchCarsData({ onlyHighlighted, brandId }),
+    queryFn: () =>
+      fetchCarsData({
+        onlyHighlighted,
+        brandId,
+        userId: data?.userId,
+        token: data?.token,
+      }),
     initialData,
     enabled: isEnabled,
   });

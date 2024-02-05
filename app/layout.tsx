@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "../components/Navigation";
 import { ReactQueryProvider } from "./ReactQueryProvider";
-import { AuthProvider } from "./AuthProvider";
 import { FavoriteCarsProvider } from "./providers/FavoriteCarsProvider";
+import AuthProvider from "./providers/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
-      <html lang="en">
-        <body className={inter.className}>
+    <html lang="en">
+      <body className={inter.className}>
+        <AuthProvider>
           <Navigation />
           <ReactQueryProvider>
             <FavoriteCarsProvider>{children}</FavoriteCarsProvider>
           </ReactQueryProvider>
-        </body>
-      </html>
-    </AuthProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }

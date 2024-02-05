@@ -9,11 +9,11 @@ import { DropdownMenu } from "../DropdownMenu";
 import { useRemoveCarMutation } from "@/app/server/actions/car/useRemoveCarMutation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
-import { useAuthProvider } from "@/app/AuthProvider";
 import { Button } from "../ui/button";
 import { useAddCarToFavoriteMutation } from "@/app/server/actions/car/useAddCarToFavoriteMutation";
 import { useRemoveCarFromFavoriteMutation } from "@/app/server/actions/car/useRemoveCarFromFavoriteMutation";
 import { useFavoriteCarsProvider } from "@/app/providers/FavoriteCarsProvider";
+import { useSession } from "next-auth/react";
 
 type Props = {
   id: string;
@@ -42,11 +42,9 @@ export const CarTile = ({
   isFavorite,
   isFavoritesList,
 }: Props) => {
-  const {
-    authState: { jwtToken },
-  } = useAuthProvider();
   const { localFavoriteCars, addToFavorites, removeFromFavorites } =
     useFavoriteCarsProvider();
+  const { data } = useSession();
 
   const { push } = useRouter();
   const isSingleCarView = useSearchParams().get("singleCarView");
@@ -56,7 +54,7 @@ export const CarTile = ({
     useRemoveCarFromFavoriteMutation(isFavoritesList);
 
   const onAddToFavorites = (carId: string) => {
-    if (jwtToken) {
+    if (data?.token) {
       addCarToFavoriteMutation.mutate(carId);
       return;
     }
@@ -65,7 +63,7 @@ export const CarTile = ({
   };
 
   const onRemoveFromFavorites = (carId: string) => {
-    if (jwtToken) {
+    if (data?.token) {
       deleteCarFromFavoriteMutation.mutate(carId);
     }
 
@@ -103,7 +101,7 @@ export const CarTile = ({
   };
 
   const isCarMarkedAsFavorite = (carId: string) => {
-    if (jwtToken) return isFavorite;
+    if (data?.token) return isFavorite;
 
     const isInProviderFavoritesList = localFavoriteCars.find(
       (c) => c === carId,
@@ -144,7 +142,7 @@ export const CarTile = ({
             </span>
           </div>
 
-          {jwtToken && <DropdownMenu actions={getActionButtonOptions()} />}
+          {data?.token && <DropdownMenu actions={getActionButtonOptions()} />}
         </div>
         <Image
           width="300"

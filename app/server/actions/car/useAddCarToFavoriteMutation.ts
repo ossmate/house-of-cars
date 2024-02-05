@@ -1,7 +1,7 @@
 import { createAPIPath } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Car, getCarsQueryKey } from "./useCarsQuery";
-import { useAuthProvider } from "@/app/AuthProvider";
+import { useSession } from "next-auth/react";
 
 export const postAddCarToFavoriteRequest = (
   carId: string,
@@ -21,15 +21,12 @@ export const postAddCarToFavoriteRequest = (
   });
 
 export const useAddCarToFavoriteMutation = () => {
-  const {
-    authState: { userId, jwtToken },
-  } = useAuthProvider();
-
+  const { data } = useSession();
   const queryClient = useQueryClient();
 
   const addCarToFavoriteMutation = useMutation({
     mutationFn: (carId: string) =>
-      postAddCarToFavoriteRequest(carId, jwtToken, userId),
+      postAddCarToFavoriteRequest(carId, data?.token, data?.userId),
     onMutate: async (carId) => {
       const data: Car[] | undefined = queryClient.getQueryData([
         getCarsQueryKey,
