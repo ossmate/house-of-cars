@@ -1,3 +1,4 @@
+import { createAPIPath } from "@/lib/utils";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -18,7 +19,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials: any, _req) {
         if (!credentials?.username || !credentials?.password) return null;
 
-        const response = await fetch(`http://localhost:5000/signin`, {
+        const response = await fetch(`${createAPIPath()}/signin`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
