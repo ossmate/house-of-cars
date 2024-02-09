@@ -93,7 +93,15 @@ export const CarTile = ({
       actions.push({
         id: "2",
         label: "Remove from favorites",
-        onClick: () => deleteCarFromFavoriteMutation.mutate(id),
+        onClick: () => onRemoveFromFavorites(id),
+      });
+    }
+
+    if (!isFavorite) {
+      actions.push({
+        id: "3",
+        label: "Add to favorites",
+        onClick: () => onAddToFavorites(id),
       });
     }
 
