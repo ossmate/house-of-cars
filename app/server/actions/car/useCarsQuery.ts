@@ -2,7 +2,7 @@ import qs from "qs";
 import { useQuery } from "@tanstack/react-query";
 import { createAPIPath } from "@/lib/utils";
 import { Brand } from "@/app/api/brand/useBrandsQuery";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export type Car = {
   id: string;
@@ -47,10 +47,20 @@ export const fetchCarsData = async ({
       headers: headers,
     });
 
+    if (!response.ok) {
+      throw new Error(`Failed to fetch favorite cars: ${response.statusText}`);
+    }
+
     const { data } = await response.json();
 
     return data;
   } catch (error) {
+    const knownError = error as any;
+
+    if (knownError?.message?.includes("Unauthorized")) {
+      signOut({ redirect: false, callbackUrl: "http://localhost:3000/" });
+    }
+
     console.error("Error fetching cars:", error);
     return { error };
   }
