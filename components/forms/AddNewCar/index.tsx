@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateCarMutation } from "@/app/server/actions/car/useCreateCarMutation";
 import { uploadImageToCloudinary } from "@/lib/utils";
 import { useBrandsQuery } from "@/app/api/brand/useBrandsQuery";
+import { useSession } from "next-auth/react";
 
 const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),
@@ -31,6 +32,8 @@ export const AddNewCar = () => {
     brandsQuery: { data: brands },
   } = useBrandsQuery();
 
+    const { data } = useSession();
+
   const { createCarMutation } = useCreateCarMutation();
 
   const handleCreateNewCar = async (formData: CreateCarTypeSchema) => {
@@ -44,7 +47,7 @@ export const AddNewCar = () => {
 
     const userId = localStorage.getItem("userId");
 
-    if (!userId) {
+    if (!data?.userId) {
       throw new Error(`Missing userId`);
     }
 
@@ -54,7 +57,7 @@ export const AddNewCar = () => {
     }
 
     createCarMutation.mutate(
-      { ...formData, imageUrl, belongsToId: userId },
+      { ...formData, imageUrl, belongsToId: data?.userId },
       {
         onSuccess: (data) => {
           push(`/cars/${data?.data?.id}?singleCarView=true`);

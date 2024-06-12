@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getCarsQueryKey } from "./useCarsQuery";
 import { createAPIPath } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 export const createCarSchema = z.object({
   brandId: z.string().min(1, "Brand is required"),
@@ -18,6 +19,7 @@ type CreateCarTypeSchema = z.infer<typeof createCarSchema>;
 type CreateCarResponse = z.infer<typeof createCarSchema> & { id: string };
 
 export const useCreateCarMutation = () => {
+  const { data } = useSession();
   const queryClient = useQueryClient();
 
   const createCarRequest = (
@@ -27,7 +29,7 @@ export const useCreateCarMutation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${data?.token}`,
       },
       body: JSON.stringify({ ...formData }),
     }).then((response) => {

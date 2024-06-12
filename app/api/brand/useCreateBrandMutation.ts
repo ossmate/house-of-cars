@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getBrandsQueryKey } from "./useBrandsQuery";
 import { createAPIPath } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 export const createBrandSchema = z.object({
   name: z.string().min(1, "Brand name is required"),
@@ -12,6 +13,7 @@ type CreateBrandTypeSchema = z.infer<typeof createBrandSchema>;
 type CreateBrandResponse = z.infer<typeof createBrandSchema> & { id: string };
 
 export const useCreateBrandMutation = () => {
+    const { data } = useSession();
   const queryClient = useQueryClient();
 
   const createBrandRequest = (
@@ -21,7 +23,7 @@ export const useCreateBrandMutation = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${data?.token}`,
       },
       body: JSON.stringify(formData),
     }).then((res) => res.json());
