@@ -6,6 +6,7 @@ export default async function Cars() {
   const cars = await fetchCarsData({});
   const brands = await getBrands();
 
+
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
       <CarsTiles

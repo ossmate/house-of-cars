@@ -34,6 +34,7 @@ export const Navigation = () => {
       id: 6,
       label: "Sign Out",
       href: "/sign-out",
+      dataTour: "step-3",
       onClick: () =>
         signOut({ redirect: false, callbackUrl: "http://localhost:3000/" }),
       enabled: isAuthenticated,
@@ -44,11 +45,11 @@ export const Navigation = () => {
     <NavigationMenu className="bg-green-400 p-10 min-w-full d-flex justify-end">
       <NavigationMenuList>
         {menuItems.map(
-          ({ id, label, href, enabled = true, onClick = () => null }) => {
+          ({ id, label, href, enabled = true, onClick = () => null, dataTour = "" }) => {
             if (!enabled) return null;
 
             return (
-              <NavigationMenuItem key={id}>
+              <NavigationMenuItem key={id} data-tour={dataTour}>
                 <Link href={href} legacyBehavior passHref>
                   <NavigationMenuLink
                     active={pathname === href}
